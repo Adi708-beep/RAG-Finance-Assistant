@@ -17,8 +17,19 @@ const App: React.FC = () => {
           <IntersectObserver />
           <Routes>
             {routes.map((route, index) => {
-              // Login page doesn't need layout
-              if (route.path === '/login') {
+              // Landing and Login pages don't need layout
+              if (route.path === '/login' || route.path === '/') {
+                return (
+                  <Route
+                    key={index}
+                    path={route.path}
+                    element={route.element}
+                  />
+                );
+              }
+
+              // Payment app doesn't need MainLayout (has its own design)
+              if (route.path === '/payment') {
                 return (
                   <Route
                     key={index}
@@ -37,8 +48,7 @@ const App: React.FC = () => {
                 />
               );
             })}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <Toaster />
         </RouteGuard>

@@ -7,6 +7,7 @@ import Transactions from './pages/Transactions';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import PaymentApp from './pages/PaymentApp';
+import Landing from './pages/Landing';
 import type { ReactNode } from 'react';
 
 interface RouteConfig {
@@ -17,6 +18,12 @@ interface RouteConfig {
 }
 
 const routes: RouteConfig[] = [
+  {
+    name: 'Landing',
+    path: '/',
+    element: <Landing />,
+    visible: false
+  },
   {
     name: 'Dashboard',
     path: '/dashboard',
