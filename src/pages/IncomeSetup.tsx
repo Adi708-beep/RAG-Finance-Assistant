@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getIncomeRecords, createIncomeRecord, deleteIncomeRecord, getTotalIncome, getProfile, updateUserMode } from '@/db/api';
 import type { IncomeRecord, BudgetPeriod, UserMode } from '@/types';
-import { Trash2, Plus, DollarSign, Users, User as UserIcon } from 'lucide-react';
+import { Trash2, Plus, IndianRupee, Users, User as UserIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function IncomeSetup() {
@@ -161,7 +161,7 @@ export default function IncomeSetup() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5" />
+            <IndianRupee className="h-5 w-5" />
             Total Income
           </CardTitle>
         </CardHeader>

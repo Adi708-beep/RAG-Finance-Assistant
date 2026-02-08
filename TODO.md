@@ -16,6 +16,7 @@
   - [x] Implement real-time calculations for remaining balance and budget usage
   - [x] Perfect all financial calculations
   - [x] Deploy all updated Edge Functions
+  - [x] Replace all dollar icons with Indian Rupee icons throughout the website
 
 ## Notes
 - All currency now displayed in Indian Rupees (₹)

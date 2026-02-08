@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, DollarSign } from 'lucide-react';
+import { AlertCircle, IndianRupee } from 'lucide-react';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -76,7 +76,7 @@ export default function Login() {
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center mb-4">
             <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
-              <DollarSign className="h-6 w-6 text-primary-foreground" />
+              <IndianRupee className="h-6 w-6 text-primary-foreground" />
             </div>
           </div>
           <CardTitle className="text-2xl font-bold">Finance Assistant</CardTitle>

@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   LayoutDashboard,
   MessageSquare,
-  DollarSign,
+  IndianRupee,
   Target,
   Upload,
   Receipt,
@@ -20,7 +20,7 @@ import { useState } from 'react';
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Chat Assistant', href: '/chat', icon: MessageSquare },
-  { name: 'Income Setup', href: '/income', icon: DollarSign },
+  { name: 'Income Setup', href: '/income', icon: IndianRupee },
   { name: 'Budget Setup', href: '/budget', icon: Target },
   { name: 'Upload Documents', href: '/documents', icon: Upload },
   { name: 'Transactions', href: '/transactions', icon: Receipt },
@@ -37,7 +37,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <div className="p-6 border-b">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center">
-            <DollarSign className="h-6 w-6 text-primary-foreground" />
+            <IndianRupee className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
             <h2 className="font-bold text-lg">Finance Assistant</h2>

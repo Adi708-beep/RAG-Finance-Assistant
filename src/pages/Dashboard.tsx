@@ -14,7 +14,7 @@ import { getActiveBudget, getCurrentMonthSpending, getTotalIncome, getAlerts, cr
 import type { Budget, Transaction, Alert as AlertType, TransactionCategory } from '@/types';
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/types';
 import { Link } from 'react-router-dom';
-import { AlertCircle, TrendingUp, TrendingDown, DollarSign, Target, Plus } from 'lucide-react';
+import { AlertCircle, TrendingUp, TrendingDown, IndianRupee, Target, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Dashboard() {
@@ -264,7 +264,7 @@ export default function Dashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Income</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <IndianRupee className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">${totalIncome.toFixed(2)}</div>
