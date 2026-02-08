@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import IntersectObserver from '@/components/common/IntersectObserver';
-import MainLayout from '@/components/layouts/MainLayout';
+import FloatingSidebarLayout from '@/components/layouts/FloatingSidebarLayout';
 
 import routes from './routes';
 
@@ -28,7 +28,7 @@ const App: React.FC = () => {
                 );
               }
 
-              // Payment app doesn't need MainLayout (has its own design)
+              // Payment app doesn't need FloatingSidebarLayout (has its own design)
               if (route.path === '/payment') {
                 return (
                   <Route
@@ -39,12 +39,12 @@ const App: React.FC = () => {
                 );
               }
 
-              // All other pages use MainLayout
+              // All other pages use FloatingSidebarLayout
               return (
                 <Route
                   key={index}
                   path={route.path}
-                  element={<MainLayout>{route.element}</MainLayout>}
+                  element={<FloatingSidebarLayout>{route.element}</FloatingSidebarLayout>}
                 />
               );
             })}

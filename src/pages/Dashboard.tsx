@@ -269,51 +269,59 @@ export default function Dashboard() {
 
       {/* Summary Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="floating-card border-none shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Income</CardTitle>
-            <IndianRupee className="h-4 w-4 text-muted-foreground" />
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+              <IndianRupee className="h-5 w-5 text-primary" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{totalIncome.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">Current period</p>
+            <div className="text-3xl font-bold">₹{totalIncome.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground mt-1">Current period</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="floating-card border-none shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
-            <TrendingDown className="h-4 w-4 text-destructive" />
+            <div className="h-10 w-10 rounded-xl bg-destructive/10 flex items-center justify-center">
+              <TrendingDown className="h-5 w-5 text-destructive" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{totalSpent.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">This month</p>
+            <div className="text-3xl font-bold">₹{totalSpent.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground mt-1">This month</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="floating-card border-none shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Remaining</CardTitle>
-            <TrendingUp className="h-4 w-4 text-success" />
+            <div className="h-10 w-10 rounded-xl bg-success/10 flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-success" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${remaining < 0 ? 'text-destructive' : 'text-success'}`}>
+            <div className={`text-3xl font-bold ${remaining < 0 ? 'text-destructive' : 'text-success'}`}>
               ₹{remaining.toFixed(2)}
             </div>
-            <p className="text-xs text-muted-foreground">Available balance</p>
+            <p className="text-xs text-muted-foreground mt-1">Available balance</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="floating-card border-none shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Budget Usage</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
+            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Target className="h-5 w-5 text-primary" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${budgetUsagePercentage > 100 ? 'text-destructive' : budgetUsagePercentage > 80 ? 'text-warning' : ''}`}>
+            <div className={`text-3xl font-bold ${budgetUsagePercentage > 100 ? 'text-destructive' : budgetUsagePercentage > 80 ? 'text-warning' : 'text-primary'}`}>
               {budgetUsagePercentage.toFixed(1)}%
             </div>
-            <p className="text-xs text-muted-foreground">Of total budget</p>
+            <p className="text-xs text-muted-foreground mt-1">Of total budget</p>
           </CardContent>
         </Card>
       </div>

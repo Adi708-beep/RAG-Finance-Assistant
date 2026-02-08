@@ -1,0 +1,122 @@
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import {
+  LayoutDashboard,
+  MessageSquare,
+  IndianRupee,
+  Target,
+  Upload,
+  Receipt,
+  Settings,
+  LogOut,
+  Sparkles
+} from 'lucide-react';
+
+interface FloatingSidebarLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function FloatingSidebarLayout({ children }: FloatingSidebarLayoutProps) {
+  const location = useLocation();
+  const { signOut } = useAuth();
+
+  const navItems = [
+    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/chat', icon: MessageSquare, label: 'AI Chat' },
+    { path: '/income', icon: IndianRupee, label: 'Income' },
+    { path: '/budget', icon: Target, label: 'Budget' },
+    { path: '/documents', icon: Upload, label: 'Documents' },
+    { path: '/transactions', icon: Receipt, label: 'Transactions' },
+    { path: '/settings', icon: Settings, label: 'Settings' }
+  ];
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
+  return (
+    <div className="min-h-screen bg-background gradient-bg-1">
+      {/* Floating Sidebar */}
+      <aside className="fixed left-6 top-6 bottom-6 w-20 z-50 hidden lg:block">
+        <div className="h-full glass-effect rounded-3xl p-4 flex flex-col items-center gap-6 shadow-2xl">
+          {/* Logo */}
+          <Link to="/dashboard" className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg">
+            <Sparkles className="h-6 w-6" />
+          </Link>
+
+          {/* Navigation */}
+          <nav className="flex-1 flex flex-col gap-3 w-full">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`
+                    relative flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300
+                    ${isActive 
+                      ? 'bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg scale-110' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted hover:scale-105'
+                    }
+                  `}
+                  title={item.label}
+                >
+                  <Icon className="h-5 w-5" />
+                  {isActive && (
+                    <span className="absolute -right-1 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-full" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Logout */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleSignOut}
+            className="w-12 h-12 rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            title="Sign Out"
+          >
+            <LogOut className="h-5 w-5" />
+          </Button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="lg:pl-32 min-h-screen">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          {children}
+        </div>
+      </main>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 lg:hidden bg-background/95 backdrop-blur-lg border-t border-border z-50">
+        <div className="flex items-center justify-around px-4 py-3">
+          {navItems.slice(0, 5).map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`
+                  flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all
+                  ${isActive 
+                    ? 'text-primary' 
+                    : 'text-muted-foreground'
+                  }
+                `}
+              >
+                <Icon className="h-5 w-5" />
+                <span className="text-xs font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </div>
+  );
+}

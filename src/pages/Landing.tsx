@@ -125,17 +125,19 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+      <nav className="sticky top-0 z-50 glass-effect border-b border-border/50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <IndianRupee className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">RupeeWise</span>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground shadow-lg">
+              <IndianRupee className="h-6 w-6" />
+            </div>
+            <span className="text-2xl font-bold gradient-text">RupeeWise</span>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={() => navigate('/login')}>
+            <Button variant="ghost" onClick={() => navigate('/login')} className="rounded-full">
               Sign In
             </Button>
-            <Button onClick={() => navigate('/login')}>
+            <Button onClick={() => navigate('/login')} className="rounded-full bg-gradient-to-r from-primary to-secondary hover:opacity-90">
               Sign Up
             </Button>
           </div>
@@ -143,49 +145,54 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 md:py-32">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <Badge variant="outline" className="text-lg px-4 py-2">
-            Built for India 🇮🇳
-          </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            Manage Your Money Smarter with AI
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
-            Track expenses, set budgets, and plan your monthly or family finances using AI powered by your real spending data — not guesses.
-          </p>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 gradient-bg-1" />
+        <div className="container mx-auto px-4 py-20 md:py-32 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <Badge variant="outline" className="text-base px-6 py-2 rounded-full border-2 border-primary/20 bg-background/50 backdrop-blur">
+              Built for India 🇮🇳
+            </Badge>
+            <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+              <span className="gradient-text">Awesome UI Dark</span>
+              <br />
+              <span className="text-foreground">Template for Web-flow Agency</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
+              Track expenses, set budgets, and plan your monthly or family finances using AI powered by your real spending data — not guesses.
+            </p>
           
-          {/* Key Highlights */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto pt-8">
-            <div className="flex flex-col items-center gap-2 p-4">
-              <Sparkles className="h-8 w-8 text-primary" />
-              <span className="text-sm font-medium text-center">AI-assisted budgeting</span>
+            {/* Key Highlights */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto pt-8">
+              <div className="flex flex-col items-center gap-2 p-4">
+                <Sparkles className="h-8 w-8 text-primary" />
+                <span className="text-sm font-medium text-center">AI-assisted budgeting</span>
+              </div>
+              <div className="flex flex-col items-center gap-2 p-4">
+                <Users className="h-8 w-8 text-primary" />
+                <span className="text-sm font-medium text-center">Personal & family planning</span>
+              </div>
+              <div className="flex flex-col items-center gap-2 p-4">
+                <Upload className="h-8 w-8 text-primary" />
+                <span className="text-sm font-medium text-center">Receipt uploads & insights</span>
+              </div>
+              <div className="flex flex-col items-center gap-2 p-4">
+                <Shield className="h-8 w-8 text-primary" />
+                <span className="text-sm font-medium text-center">Privacy-focused AI</span>
+              </div>
             </div>
-            <div className="flex flex-col items-center gap-2 p-4">
-              <Users className="h-8 w-8 text-primary" />
-              <span className="text-sm font-medium text-center">Personal & family planning</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 p-4">
-              <Upload className="h-8 w-8 text-primary" />
-              <span className="text-sm font-medium text-center">Receipt uploads & insights</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 p-4">
-              <Shield className="h-8 w-8 text-primary" />
-              <span className="text-sm font-medium text-center">Privacy-focused AI</span>
-            </div>
-          </div>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
-            <Button size="lg" className="text-lg px-8 py-6" onClick={() => navigate('/login')}>
-              Get Started Free
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6" onClick={() => {
-              document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
-            }}>
-              See How It Works
-            </Button>
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+              <Button size="lg" className="text-lg px-8 py-6" onClick={() => navigate('/login')}>
+                Get Started Free
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6" onClick={() => {
+                document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+              }}>
+                See How It Works
+              </Button>
+            </div>
           </div>
         </div>
       </section>
