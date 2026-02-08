@@ -84,11 +84,12 @@ STRICT RULES:
 2. NEVER provide investment guarantees, legal advice, or tax evasion strategies.
 3. Base your answers ONLY on the provided user data. Do NOT guess or hallucinate numbers.
 4. Be helpful, informative, and neutral in tone.
+5. All currency amounts are in Indian Rupees (₹).
 
 USER CONTEXT:
 - Mode: ${context.userMode}
-- Total Income: $${totalIncome.toFixed(2)}
-- Total Spent This Month: $${context.totalSpentThisMonth.toFixed(2)}
+- Total Income: ₹${totalIncome.toFixed(2)}
+- Total Spent This Month: ₹${context.totalSpentThisMonth.toFixed(2)}
 - Active Budget: ${context.activeBudget ? 'Yes' : 'No'}
 ${context.activeBudget ? `- Budget Allocations: ${JSON.stringify({
   rent: context.activeBudget.rent,
@@ -112,7 +113,7 @@ ${context.activeBudget ? `- Budget Allocations: ${JSON.stringify({
   category: t.category
 })))}
 
-Answer the user's question based on this data.`;
+Answer the user's question based on this data. Always use ₹ (Indian Rupees) for currency amounts.`;
 
     // Prepare Gemini API request
     const geminiApiKey = Deno.env.get('INTEGRATIONS_API_KEY');

@@ -163,6 +163,140 @@ ${extractedText}`;
       }));
 
       await supabase.from('transactions').insert(transactionsToInsert);
+
+      // Analyze spending patterns and suggest budget
+      const spendingByCategory: Record<string, number> = {};
+      transactions.forEach((t: any) => {
+        spendingByCategory[t.category] = (spendingByCategory[t.category] || 0) + t.amount;
+      });
+
+      // Get user's total income
+      const { data: incomeRecords } = await supabase
+        .from('income_records')
+        .select('amount')
+        .eq('user_id', userId);
+
+      const totalIncome = incomeRecords?.reduce((sum, rec) => sum + parseFloat(rec.amount), 0) || 0;
+
+      // If user has income but no active budget, suggest one
+      if (totalIncome > 0) {
+        const { data: existingBudget } = await supabase
+          .from('budgets')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (!existingBudget) {
+          // Generate budget suggestion based on spending patterns
+          const budgetPrompt = `Based on the following spending patterns from uploaded documents, create a balanced monthly budget for a user with total income of ₹${totalIncome}.
+
+Observed spending patterns:
+${JSON.stringify(spendingByCategory, null, 2)}
+
+Create a comprehensive budget allocation across these categories:
+- rent, groceries, transport, entertainment, savings, emergency_fund, utilities, healthcare, education, dining, shopping, other
+
+Return ONLY a valid JSON object with this exact format:
+{
+  "rent": 0,
+  "groceries": 0,
+  "transport": 0,
+  "entertainment": 0,
+  "savings": 0,
+  "emergency_fund": 0,
+  "utilities": 0,
+  "healthcare": 0,
+  "education": 0,
+  "dining": 0,
+  "shopping": 0,
+  "other": 0
+}
+
+Guidelines:
+1. Allocate higher amounts to categories with observed spending
+2. Ensure savings is at least 20% of income
+3. Emergency fund should be at least 10% of income
+4. Total allocations should not exceed total income
+5. All values must be positive numbers in Indian Rupees`;
+
+          const geminiRequest = {
+            contents: [
+              { role: 'user', parts: [{ text: budgetPrompt }] }
+            ]
+          };
+
+          const geminiResponse = await fetch(geminiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Gateway-Authorization': `Bearer ${geminiApiKey}`
+            },
+            body: JSON.stringify(geminiRequest)
+          });
+
+          if (geminiResponse.ok) {
+            const reader = geminiResponse.body?.getReader();
+            const decoder = new TextDecoder();
+            let budgetResponse = '';
+
+            while (true) {
+              const { done, value } = await reader!.read();
+              if (done) break;
+
+              const chunk = decoder.decode(value);
+              const lines = chunk.split('\n');
+
+              for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                  const data = line.slice(6);
+                  if (data.trim()) {
+                    try {
+                      const parsed = JSON.parse(data);
+                      const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+                      if (text) {
+                        budgetResponse += text;
+                      }
+                    } catch (e) {
+                      // Skip invalid JSON
+                    }
+                  }
+                }
+              }
+            }
+
+            // Extract JSON from response
+            try {
+              const jsonMatch = budgetResponse.match(/\{[\s\S]*\}/);
+              if (jsonMatch) {
+                const suggestedBudget = JSON.parse(jsonMatch[0]);
+
+                // Create the suggested budget
+                await supabase.from('budgets').insert({
+                  user_id: userId,
+                  period: 'monthly',
+                  total_income: totalIncome,
+                  rent: suggestedBudget.rent || 0,
+                  groceries: suggestedBudget.groceries || 0,
+                  transport: suggestedBudget.transport || 0,
+                  entertainment: suggestedBudget.entertainment || 0,
+                  savings: suggestedBudget.savings || 0,
+                  emergency_fund: suggestedBudget.emergency_fund || 0,
+                  utilities: suggestedBudget.utilities || 0,
+                  healthcare: suggestedBudget.healthcare || 0,
+                  education: suggestedBudget.education || 0,
+                  dining: suggestedBudget.dining || 0,
+                  shopping: suggestedBudget.shopping || 0,
+                  other: suggestedBudget.other || 0,
+                  is_active: true
+                });
+              }
+            } catch (e) {
+              console.error('Failed to parse budget suggestion:', e);
+            }
+          }
+        }
+      }
     }
 
     // Mark document as processed

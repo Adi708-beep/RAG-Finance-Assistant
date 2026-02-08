@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
     });
 
     // Build prompt for Gemini
-    const prompt = `You are a financial advisor. Create a ${period} budget plan for a user with total income of $${totalIncome}.
+    const prompt = `You are a financial advisor. Create a ${period} budget plan for a user with total income of ₹${totalIncome}.
 
 ${transactions && transactions.length > 0 ? `The user's past spending patterns:
 ${JSON.stringify(avgSpending, null, 2)}` : 'No past spending data available.'}
@@ -95,7 +95,7 @@ Ensure:
 2. Prioritize savings (at least 20% of income)
 3. Emergency fund should be at least 10% of income
 4. Consider past spending patterns if available
-5. All values must be positive numbers`;
+5. All values must be positive numbers in Indian Rupees (₹)`;
 
     // Call Gemini API
     const geminiApiKey = Deno.env.get('INTEGRATIONS_API_KEY');

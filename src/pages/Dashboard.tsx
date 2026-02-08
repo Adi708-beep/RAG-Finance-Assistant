@@ -5,19 +5,31 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getActiveBudget, getCurrentMonthSpending, getTotalIncome, getAlerts } from '@/db/api';
-import type { Budget, Transaction, Alert as AlertType } from '@/types';
+import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { getActiveBudget, getCurrentMonthSpending, getTotalIncome, getAlerts, createTransaction } from '@/db/api';
+import type { Budget, Transaction, Alert as AlertType, TransactionCategory } from '@/types';
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/types';
 import { Link } from 'react-router-dom';
-import { AlertCircle, TrendingUp, TrendingDown, DollarSign, Target } from 'lucide-react';
+import { AlertCircle, TrendingUp, TrendingDown, DollarSign, Target, Plus } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [budget, setBudget] = useState<Budget | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [totalIncome, setTotalIncome] = useState(0);
   const [alerts, setAlerts] = useState<AlertType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [addExpenseOpen, setAddExpenseOpen] = useState(false);
+  const [expenseCategory, setExpenseCategory] = useState<TransactionCategory>('other');
+  const [expenseAmount, setExpenseAmount] = useState('');
+  const [expenseDescription, setExpenseDescription] = useState('');
+  const [manualSpending, setManualSpending] = useState<Record<string, number>>({});
 
   useEffect(() => {
     if (!user) return;
@@ -53,8 +65,86 @@ export default function Dashboard() {
     return spending;
   };
 
+  const handleAddExpense = async () => {
+    if (!user || !expenseAmount || parseFloat(expenseAmount) <= 0) {
+      toast({
+        title: 'Invalid amount',
+        description: 'Please enter a valid amount',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      const newTransaction = await createTransaction({
+        user_id: user.id,
+        document_id: null,
+        amount: parseFloat(expenseAmount),
+        transaction_date: new Date().toISOString().split('T')[0],
+        merchant: 'Manual Entry',
+        category: expenseCategory,
+        description: expenseDescription || 'Manual expense entry'
+      });
+
+      setTransactions([...transactions, newTransaction]);
+      setExpenseAmount('');
+      setExpenseDescription('');
+      setAddExpenseOpen(false);
+
+      toast({
+        title: 'Expense added',
+        description: 'Your expense has been recorded successfully'
+      });
+
+      // Check for budget alerts
+      const spending = calculateSpending();
+      const newSpending = (spending[expenseCategory] || 0) + parseFloat(expenseAmount);
+      const allocated = budget ? Number(budget[expenseCategory as keyof Budget] || 0) : 0;
+
+      if (allocated > 0) {
+        const percentage = (newSpending / allocated) * 100;
+        if (percentage >= 100) {
+          toast({
+            title: 'Budget exceeded',
+            description: `You've exceeded your ${CATEGORY_LABELS[expenseCategory]} budget`,
+            variant: 'destructive'
+          });
+        } else if (percentage >= 80) {
+          toast({
+            title: 'Budget warning',
+            description: `You've used ${percentage.toFixed(0)}% of your ${CATEGORY_LABELS[expenseCategory]} budget`,
+            variant: 'default'
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error adding expense:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add expense',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const handleSliderChange = (category: string, value: number[]) => {
+    setManualSpending({
+      ...manualSpending,
+      [category]: value[0]
+    });
+  };
+
   const spending = calculateSpending();
-  const totalSpent = Object.values(spending).reduce((a, b) => a + b, 0);
+  
+  // Merge actual spending with manual slider adjustments
+  const totalSpendingByCategory: Record<string, number> = {};
+  Object.keys(CATEGORY_LABELS).forEach((category) => {
+    const actualSpent = spending[category] || 0;
+    const manualAdjustment = manualSpending[category] || 0;
+    totalSpendingByCategory[category] = actualSpent + manualAdjustment;
+  });
+
+  const totalSpent = Object.values(totalSpendingByCategory).reduce((a, b) => a + b, 0);
   const totalBudgeted = budget
     ? Number(budget.rent) +
       Number(budget.groceries) +
@@ -71,6 +161,7 @@ export default function Dashboard() {
     : 0;
 
   const remaining = totalIncome - totalSpent;
+  const budgetUsagePercentage = totalBudgeted > 0 ? (totalSpent / totalBudgeted) * 100 : 0;
 
   if (loading) {
     return (
@@ -88,9 +179,72 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Your financial overview at a glance</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-muted-foreground">Your financial overview at a glance</p>
+        </div>
+        <Dialog open={addExpenseOpen} onOpenChange={setAddExpenseOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Expense
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Manual Expense</DialogTitle>
+              <DialogDescription>
+                Record an expense manually to track your spending
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="category">Category</Label>
+                <Select value={expenseCategory} onValueChange={(value) => setExpenseCategory(value as TransactionCategory)}>
+                  <SelectTrigger id="category">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {CATEGORY_ICONS[value as TransactionCategory]} {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="amount">Amount (₹)</Label>
+                <Input
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={expenseAmount}
+                  onChange={(e) => setExpenseAmount(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Description (Optional)</Label>
+                <Input
+                  id="description"
+                  placeholder="What did you spend on?"
+                  value={expenseDescription}
+                  onChange={(e) => setExpenseDescription(e.target.value)}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setAddExpenseOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddExpense}>
+                Add Expense
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Alerts */}
@@ -135,7 +289,9 @@ export default function Dashboard() {
             <TrendingUp className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${remaining.toFixed(2)}</div>
+            <div className={`text-2xl font-bold ${remaining < 0 ? 'text-destructive' : 'text-success'}`}>
+              ${remaining.toFixed(2)}
+            </div>
             <p className="text-xs text-muted-foreground">Available balance</p>
           </CardContent>
         </Card>
@@ -146,8 +302,8 @@ export default function Dashboard() {
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {totalBudgeted > 0 ? ((totalSpent / totalBudgeted) * 100).toFixed(1) : 0}%
+            <div className={`text-2xl font-bold ${budgetUsagePercentage > 100 ? 'text-destructive' : budgetUsagePercentage > 80 ? 'text-warning' : ''}`}>
+              {budgetUsagePercentage.toFixed(1)}%
             </div>
             <p className="text-xs text-muted-foreground">Of total budget</p>
           </CardContent>
@@ -159,24 +315,27 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Budget Breakdown</CardTitle>
+            <p className="text-sm text-muted-foreground">Track your spending with sliders or add expenses manually</p>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             {Object.entries(CATEGORY_LABELS).map(([category, label]) => {
               const allocated = Number(budget[category as keyof Budget] || 0);
-              const spent = spending[category] || 0;
-              const percentage = allocated > 0 ? (spent / allocated) * 100 : 0;
+              const actualSpent = spending[category] || 0;
+              const manualAdjustment = manualSpending[category] || 0;
+              const totalSpentInCategory = actualSpent + manualAdjustment;
+              const percentage = allocated > 0 ? (totalSpentInCategory / allocated) * 100 : 0;
 
               if (allocated === 0) return null;
 
               return (
-                <div key={category} className="space-y-2">
+                <div key={category} className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-xl">{CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS]}</span>
                       <span className="font-medium">{label}</span>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      ${spent.toFixed(2)} / ${allocated.toFixed(2)}
+                      ${totalSpentInCategory.toFixed(2)} / ${allocated.toFixed(2)}
                     </div>
                   </div>
                   <Progress
@@ -184,6 +343,19 @@ export default function Dashboard() {
                     className="h-2"
                     indicatorClassName={percentage > 100 ? 'bg-destructive' : percentage > 80 ? 'bg-warning' : 'bg-primary'}
                   />
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>Adjust spending tracker</span>
+                      <span>+${manualAdjustment.toFixed(2)}</span>
+                    </div>
+                    <Slider
+                      value={[manualAdjustment]}
+                      onValueChange={(value) => handleSliderChange(category, value)}
+                      max={allocated}
+                      step={10}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
               );
             })}

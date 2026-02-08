@@ -157,7 +157,7 @@ export default function DocumentUpload() {
 
       toast({
         title: 'Document processed',
-        description: `Extracted ${data.transactionCount} transactions`
+        description: `Extracted ${data.transactionCount} transactions. AI is analyzing your spending patterns to suggest a budget.`
       });
     } catch (error) {
       console.error('Error uploading document:', error);
