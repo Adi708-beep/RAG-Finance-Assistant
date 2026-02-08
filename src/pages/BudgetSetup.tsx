@@ -169,24 +169,24 @@ export default function BudgetSetup() {
   const remaining = totalIncome - totalAllocated;
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold">Budget Setup</h1>
-        <p className="text-muted-foreground">Create and manage your budget</p>
+        <h1 className="text-2xl md:text-3xl font-bold">Budget Setup</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Create and manage your budget</p>
       </div>
 
       {totalIncome === 0 && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
+          <AlertDescription className="text-sm">
             Please set up your income first before creating a budget.
           </AlertDescription>
         </Alert>
       )}
 
-      <Card>
+      <Card className="floating-card border-none shadow-lg">
         <CardHeader>
-          <CardTitle>Budget Summary</CardTitle>
+          <CardTitle className="text-xl">Budget Summary</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 md:grid-cols-3">

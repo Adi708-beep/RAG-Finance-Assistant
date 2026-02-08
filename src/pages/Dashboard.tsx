@@ -180,20 +180,20 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-3">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">Your financial overview at a glance</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Dashboard</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Your financial overview at a glance</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => navigate('/payment')}>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="outline" onClick={() => navigate('/payment')} className="rounded-full flex-1 sm:flex-none">
             <CreditCard className="h-4 w-4 mr-2" />
             Quick Pay
           </Button>
           <Dialog open={addExpenseOpen} onOpenChange={setAddExpenseOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className="rounded-full flex-1 sm:flex-none">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Expense
               </Button>

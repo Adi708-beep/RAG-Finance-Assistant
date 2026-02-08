@@ -50,21 +50,21 @@ export default function Transactions() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-6xl mx-auto">
-      <div className="flex items-center justify-between flex-wrap gap-4">
+    <div className="space-y-6 max-w-6xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Transactions</h1>
-          <p className="text-muted-foreground">View all your transactions</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Transactions</h1>
+          <p className="text-sm md:text-base text-muted-foreground">View all your transactions</p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Button onClick={() => navigate('/payment')} className="gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <Button onClick={() => navigate('/payment')} className="gap-2 rounded-full">
             <CreditCard className="h-4 w-4" />
             Pay Now
           </Button>
-          <div className="w-64">
+          <div className="w-full sm:w-64">
             <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger>
+              <SelectTrigger className="rounded-full">
                 <SelectValue placeholder="Filter by category" />
               </SelectTrigger>
               <SelectContent>

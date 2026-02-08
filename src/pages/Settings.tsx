@@ -15,15 +15,15 @@ export default function Settings() {
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold">Settings</h1>
-        <p className="text-muted-foreground">Manage your account settings</p>
+        <h1 className="text-2xl md:text-3xl font-bold">Settings</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Manage your account settings</p>
       </div>
 
-      <Card>
+      <Card className="floating-card border-none shadow-lg">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-xl">
             <User className="h-5 w-5" />
             Profile Information
           </CardTitle>
@@ -31,12 +31,12 @@ export default function Settings() {
         <CardContent className="space-y-4">
           <div>
             <p className="text-sm text-muted-foreground">Username</p>
-            <p className="text-lg font-medium">{profile?.username}</p>
+            <p className="text-base md:text-lg font-medium">{profile?.username}</p>
           </div>
 
           <div>
             <p className="text-sm text-muted-foreground">Email</p>
-            <p className="text-lg font-medium">{profile?.email || user?.email}</p>
+            <p className="text-base md:text-lg font-medium">{profile?.email || user?.email}</p>
           </div>
 
           <div>
@@ -55,25 +55,25 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="floating-card border-none shadow-lg">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-xl">
             <Shield className="h-5 w-5" />
             Security
           </CardTitle>
-          <CardDescription>Manage your account security</CardDescription>
+          <CardDescription className="text-sm">Manage your account security</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="destructive" onClick={handleSignOut}>
+          <Button variant="destructive" onClick={handleSignOut} className="rounded-full">
             <LogOut className="h-4 w-4 mr-2" />
             Sign Out
           </Button>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="floating-card border-none shadow-lg">
         <CardHeader>
-          <CardTitle>Disclaimer</CardTitle>
+          <CardTitle className="text-xl">Disclaimer</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">

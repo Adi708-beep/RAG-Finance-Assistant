@@ -183,20 +183,20 @@ export default function DocumentUpload() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold">Document Upload</h1>
-        <p className="text-muted-foreground">Upload receipts and bank statements</p>
+        <h1 className="text-2xl md:text-3xl font-bold">Document Upload</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Upload receipts and bank statements</p>
       </div>
 
       <Alert>
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
+        <AlertDescription className="text-sm">
           Supported formats: PDF, JPG, PNG, WEBP. Maximum file size: 1MB. Files will be automatically compressed if needed.
         </AlertDescription>
       </Alert>
 
-      <Card>
+      <Card className="floating-card border-none shadow-lg">
         <CardHeader>
           <CardTitle>Upload Document</CardTitle>
           <CardDescription>

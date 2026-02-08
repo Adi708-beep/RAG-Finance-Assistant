@@ -125,17 +125,17 @@ export default function IncomeSetup() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold">Income Setup</h1>
-        <p className="text-muted-foreground">Manage your income sources</p>
+        <h1 className="text-2xl md:text-3xl font-bold">Income Setup</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Manage your income sources</p>
       </div>
 
       {/* Mode Selection */}
-      <Card>
+      <Card className="floating-card border-none shadow-lg">
         <CardHeader>
-          <CardTitle>User Mode</CardTitle>
-          <CardDescription>Choose between personal or family mode</CardDescription>
+          <CardTitle className="text-xl">User Mode</CardTitle>
+          <CardDescription className="text-sm">Choose between personal or family mode</CardDescription>
         </CardHeader>
         <CardContent>
           <RadioGroup value={mode} onValueChange={(value) => handleModeChange(value as UserMode)}>

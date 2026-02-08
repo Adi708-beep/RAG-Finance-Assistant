@@ -159,26 +159,26 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
-      <div className="p-6 border-b">
-        <h1 className="text-3xl font-bold">AI Finance Assistant</h1>
-        <p className="text-muted-foreground">Ask me anything about your finances</p>
+    <div className="flex flex-col h-[calc(100vh-8rem)] lg:h-[calc(100vh-4rem)]">
+      <div className="p-4 md:p-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <h1 className="text-2xl md:text-3xl font-bold">AI Finance Assistant</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Ask me anything about your finances</p>
       </div>
 
-      <Alert className="m-6 mb-0">
+      <Alert className="m-4 md:m-6 mb-0">
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
+        <AlertDescription className="text-sm">
           This assistant provides budgeting insights only and does not offer investment or legal advice.
         </AlertDescription>
       </Alert>
 
-      <ScrollArea className="flex-1 p-6" ref={scrollRef}>
-        <div className="space-y-4 max-w-3xl mx-auto">
+      <ScrollArea className="flex-1 p-4 md:p-6" ref={scrollRef}>
+        <div className="space-y-4 max-w-3xl mx-auto pb-4">
           {messages.length === 0 && (
-            <Card className="p-6 text-center">
+            <Card className="p-6 text-center floating-card">
               <Bot className="h-12 w-12 mx-auto mb-4 text-primary" />
               <h3 className="text-lg font-semibold mb-2">Welcome to your Finance Assistant</h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Ask me about your spending, budget, or financial goals. I'm here to help!
               </p>
             </Card>
@@ -187,24 +187,24 @@ export default function Chat() {
           {messages.map((msg) => (
             <div
               key={msg.id}
-              className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex gap-2 md:gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.role === 'model' && (
-                <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0">
                   <Bot className="h-5 w-5 text-primary-foreground" />
                 </div>
               )}
               <div
-                className={`rounded-lg p-4 max-w-[80%] ${
+                className={`rounded-2xl p-3 md:p-4 max-w-[85%] md:max-w-[80%] ${
                   msg.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted'
+                    ? 'bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg'
+                    : 'bg-muted shadow-md'
                 }`}
               >
-                <p className="whitespace-pre-wrap">{msg.message}</p>
+                <p className="whitespace-pre-wrap text-sm md:text-base">{msg.message}</p>
               </div>
               {msg.role === 'user' && (
-                <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-secondary to-primary flex items-center justify-center shrink-0">
                   <User className="h-5 w-5 text-secondary-foreground" />
                 </div>
               )}
@@ -212,22 +212,22 @@ export default function Chat() {
           ))}
 
           {streamingMessage && (
-            <div className="flex gap-3 justify-start">
-              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+            <div className="flex gap-2 md:gap-3 justify-start">
+              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0">
                 <Bot className="h-5 w-5 text-primary-foreground" />
               </div>
-              <div className="rounded-lg p-4 max-w-[80%] bg-muted">
-                <p className="whitespace-pre-wrap">{streamingMessage}</p>
+              <div className="rounded-2xl p-3 md:p-4 max-w-[85%] md:max-w-[80%] bg-muted shadow-md">
+                <p className="whitespace-pre-wrap text-sm md:text-base">{streamingMessage}</p>
               </div>
             </div>
           )}
 
           {sending && !streamingMessage && (
-            <div className="flex gap-3 justify-start">
-              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+            <div className="flex gap-2 md:gap-3 justify-start">
+              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0">
                 <Bot className="h-5 w-5 text-primary-foreground" />
               </div>
-              <div className="rounded-lg p-4 bg-muted">
+              <div className="rounded-2xl p-3 md:p-4 bg-muted shadow-md">
                 <div className="flex gap-1">
                   <div className="h-2 w-2 rounded-full bg-foreground animate-bounce" />
                   <div className="h-2 w-2 rounded-full bg-foreground animate-bounce delay-100" />
@@ -239,7 +239,7 @@ export default function Chat() {
         </div>
       </ScrollArea>
 
-      <div className="p-6 border-t">
+      <div className="p-4 md:p-6 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-20 lg:pb-6">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -252,9 +252,9 @@ export default function Chat() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about your finances..."
             disabled={sending}
-            className="flex-1"
+            className="flex-1 rounded-full"
           />
-          <Button type="submit" disabled={sending || !input.trim()}>
+          <Button type="submit" disabled={sending || !input.trim()} className="rounded-full" size="icon">
             <Send className="h-4 w-4" />
           </Button>
         </form>

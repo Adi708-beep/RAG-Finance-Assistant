@@ -86,15 +86,15 @@ export default function FloatingSidebarLayout({ children }: FloatingSidebarLayou
       </aside>
 
       {/* Main Content */}
-      <main className="lg:pl-32 min-h-screen">
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="lg:pl-32 min-h-screen pb-20 lg:pb-0">
+        <div className="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
           {children}
         </div>
       </main>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 lg:hidden bg-background/95 backdrop-blur-lg border-t border-border z-50">
-        <div className="flex items-center justify-around px-4 py-3">
+      <nav className="fixed bottom-0 left-0 right-0 lg:hidden glass-effect border-t border-border/50 z-50 safe-area-inset-bottom">
+        <div className="flex items-center justify-around px-2 py-3">
           {navItems.slice(0, 5).map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -103,15 +103,23 @@ export default function FloatingSidebarLayout({ children }: FloatingSidebarLayou
                 key={item.path}
                 to={item.path}
                 className={`
-                  flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all
+                  flex flex-col items-center gap-1 px-2 py-1 rounded-xl transition-all min-w-[60px]
                   ${isActive 
                     ? 'text-primary' 
                     : 'text-muted-foreground'
                   }
                 `}
               >
-                <Icon className="h-5 w-5" />
-                <span className="text-xs font-medium">{item.label}</span>
+                <div className={`
+                  h-10 w-10 rounded-xl flex items-center justify-center transition-all
+                  ${isActive 
+                    ? 'bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg' 
+                    : 'hover:bg-muted'
+                  }
+                `}>
+                  <Icon className="h-5 w-5" />
+                </div>
+                <span className="text-[10px] font-medium">{item.label}</span>
               </Link>
             );
           })}
