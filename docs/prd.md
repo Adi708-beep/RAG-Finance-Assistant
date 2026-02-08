@@ -421,6 +421,17 @@ Clear separation between:
 - Instant feedback on payment completion
 - Real-time numerical updates across all pages
 
+### 8.5 Mobile Navigation Enhancement
+**Mobile Menu (Hamburger Menu):**
+- Display a 3-dash bar icon in the top right corner on mobile devices
+- On clicking the hamburger menu icon, display a dropdown or slide-out menu containing:
+  - Account
+  - Transactions
+  - Sign Out
+- Menu should overlay or push content smoothly
+- Close menu on selection or outside click
+- Maintain existing desktop navigation unchanged
+
 ## 9. Preservation Requirements
 
 ### 9.1 Existing Functionalities
@@ -436,4 +447,4 @@ All current features, UI design, and chatbot functionalities must remain unchang
 - Existing transaction management
 
 ### 9.2 Enhancement Focus
-The landing page and its components are additions that enhance the existing application without modifying or removing any current capabilities.
+The landing page and mobile navigation menu are additions that enhance the existing application without modifying or removing any current capabilities.

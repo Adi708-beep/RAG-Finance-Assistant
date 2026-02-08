@@ -71,6 +71,12 @@
   - [x] Fix mobile navigation icon sizes and spacing
   - [x] Ensure all interactive elements are touch-friendly (min 44px)
   - [x] Update landing page hero heading to "Your personal AI budget planner"
+  - [x] Add mobile hamburger menu in top right corner
+  - [x] Implement Sheet component for mobile menu drawer
+  - [x] Add Account (Settings), Transactions, and Sign Out options to mobile menu
+  - [x] Add RupeeWise logo to mobile header
+  - [x] Update Chat page height to account for mobile header (h-[calc(100vh-12rem)])
+  - [x] Add pt-16 to main content area for mobile header clearance
 
 ## Notes
 - All currency now displayed in Indian Rupees (₹)
@@ -125,6 +131,10 @@
   - Improved chat bubbles with gradient backgrounds and rounded corners
   - All cards updated with floating-card class for consistent design
   - Rounded-full buttons for modern mobile appearance
+  - Mobile hamburger menu with Account, Transactions, and Sign Out options
+  - Fixed mobile header with RupeeWise logo and glassmorphism effect
+  - Sheet drawer component for smooth mobile menu experience
+  - Proper top padding (pt-16) for mobile header clearance
 - All calculations are accurate and update in real-time
 - Existing functionalities, UI design, and chat features preserved
 - All Edge Functions updated and redeployed

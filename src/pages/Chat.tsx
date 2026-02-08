@@ -159,7 +159,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] lg:h-[calc(100vh-4rem)]">
+    <div className="flex flex-col h-[calc(100vh-12rem)] lg:h-[calc(100vh-4rem)]">
       <div className="p-4 md:p-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <h1 className="text-2xl md:text-3xl font-bold">AI Finance Assistant</h1>
         <p className="text-sm md:text-base text-muted-foreground">Ask me anything about your finances</p>
