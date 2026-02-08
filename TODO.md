@@ -70,6 +70,7 @@
   - [x] Add backdrop blur to chat input area for better visibility
   - [x] Fix mobile navigation icon sizes and spacing
   - [x] Ensure all interactive elements are touch-friendly (min 44px)
+  - [x] Update landing page hero heading to "Your personal AI budget planner"
 
 ## Notes
 - All currency now displayed in Indian Rupees (₹)

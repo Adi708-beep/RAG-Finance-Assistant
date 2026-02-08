@@ -153,9 +153,9 @@ export default function Landing() {
               Built for India 🇮🇳
             </Badge>
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-              <span className="gradient-text">Awesome UI Dark</span>
+              <span className="gradient-text">Your personal AI</span>
               <br />
-              <span className="text-foreground">Template for Web-flow Agency</span>
+              <span className="text-foreground">budget planner</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
               Track expenses, set budgets, and plan your monthly or family finances using AI powered by your real spending data — not guesses.
