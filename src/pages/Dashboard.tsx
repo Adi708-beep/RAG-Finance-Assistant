@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -14,11 +15,12 @@ import { getActiveBudget, getCurrentMonthSpending, getTotalIncome, getAlerts, cr
 import type { Budget, Transaction, Alert as AlertType, TransactionCategory } from '@/types';
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/types';
 import { Link } from 'react-router-dom';
-import { AlertCircle, TrendingUp, TrendingDown, IndianRupee, Target, Plus } from 'lucide-react';
+import { AlertCircle, TrendingUp, TrendingDown, IndianRupee, Target, Plus, CreditCard } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [budget, setBudget] = useState<Budget | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -179,18 +181,23 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-muted-foreground">Your financial overview at a glance</p>
         </div>
-        <Dialog open={addExpenseOpen} onOpenChange={setAddExpenseOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Expense
-            </Button>
-          </DialogTrigger>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => navigate('/payment')}>
+            <CreditCard className="h-4 w-4 mr-2" />
+            Quick Pay
+          </Button>
+          <Dialog open={addExpenseOpen} onOpenChange={setAddExpenseOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Expense
+              </Button>
+            </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add Manual Expense</DialogTitle>
@@ -245,6 +252,7 @@ export default function Dashboard() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {/* Alerts */}

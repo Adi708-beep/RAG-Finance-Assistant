@@ -6,6 +6,7 @@ import DocumentUpload from './pages/DocumentUpload';
 import Transactions from './pages/Transactions';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
+import PaymentApp from './pages/PaymentApp';
 import type { ReactNode } from 'react';
 
 interface RouteConfig {
@@ -45,6 +46,12 @@ const routes: RouteConfig[] = [
     name: 'Transactions',
     path: '/transactions',
     element: <Transactions />
+  },
+  {
+    name: 'Payment App',
+    path: '/payment',
+    element: <PaymentApp />,
+    visible: false
   },
   {
     name: 'Settings',
