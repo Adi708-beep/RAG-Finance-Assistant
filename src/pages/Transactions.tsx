@@ -101,7 +101,7 @@ export default function Transactions() {
                   </div>
 
                   <div className="text-right">
-                    <p className="text-lg font-bold">${Number(transaction.amount).toFixed(2)}</p>
+                    <p className="text-lg font-bold">₹{Number(transaction.amount).toFixed(2)}</p>
                     <p className="text-sm text-muted-foreground">
                       {new Date(transaction.transaction_date).toLocaleDateString()}
                     </p>

@@ -192,16 +192,16 @@ export default function BudgetSetup() {
           <div className="grid gap-4 md:grid-cols-3">
             <div>
               <p className="text-sm text-muted-foreground">Total Income</p>
-              <p className="text-2xl font-bold">${totalIncome.toFixed(2)}</p>
+              <p className="text-2xl font-bold">₹{totalIncome.toFixed(2)}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Allocated</p>
-              <p className="text-2xl font-bold">${totalAllocated.toFixed(2)}</p>
+              <p className="text-2xl font-bold">₹{totalAllocated.toFixed(2)}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Remaining</p>
               <p className={`text-2xl font-bold ${remaining < 0 ? 'text-destructive' : 'text-success'}`}>
-                ${remaining.toFixed(2)}
+                ₹{remaining.toFixed(2)}
               </p>
             </div>
           </div>
@@ -298,7 +298,7 @@ export default function BudgetSetup() {
               {Object.entries(CATEGORY_LABELS).map(([category, label]) => (
                 <div key={category} className="flex justify-between items-center p-2 border rounded">
                   <span className="font-medium">{label}</span>
-                  <span>${aiSuggestion[category as keyof BudgetSuggestion]?.toFixed(2) || '0.00'}</span>
+                  <span>₹{aiSuggestion[category as keyof BudgetSuggestion]?.toFixed(2) || '0.00'}</span>
                 </div>
               ))}
             </div>

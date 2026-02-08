@@ -267,7 +267,7 @@ export default function Dashboard() {
             <IndianRupee className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${totalIncome.toFixed(2)}</div>
+            <div className="text-2xl font-bold">₹{totalIncome.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">Current period</p>
           </CardContent>
         </Card>
@@ -278,7 +278,7 @@ export default function Dashboard() {
             <TrendingDown className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${totalSpent.toFixed(2)}</div>
+            <div className="text-2xl font-bold">₹{totalSpent.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">This month</p>
           </CardContent>
         </Card>
@@ -290,7 +290,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${remaining < 0 ? 'text-destructive' : 'text-success'}`}>
-              ${remaining.toFixed(2)}
+              ₹{remaining.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground">Available balance</p>
           </CardContent>
@@ -335,7 +335,7 @@ export default function Dashboard() {
                       <span className="font-medium">{label}</span>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      ${totalSpentInCategory.toFixed(2)} / ${allocated.toFixed(2)}
+                      ₹{totalSpentInCategory.toFixed(2)} / ₹{allocated.toFixed(2)}
                     </div>
                   </div>
                   <Progress
@@ -346,7 +346,7 @@ export default function Dashboard() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span>Adjust spending tracker</span>
-                      <span>+${manualAdjustment.toFixed(2)}</span>
+                      <span>+₹{manualAdjustment.toFixed(2)}</span>
                     </div>
                     <Slider
                       value={[manualAdjustment]}

@@ -166,7 +166,7 @@ export default function IncomeSetup() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-4xl font-bold">${totalIncome.toFixed(2)}</div>
+          <div className="text-4xl font-bold">₹{totalIncome.toFixed(2)}</div>
           <p className="text-sm text-muted-foreground mt-1">Combined {period} income</p>
         </CardContent>
       </Card>
@@ -242,7 +242,7 @@ export default function IncomeSetup() {
                   <div>
                     <p className="font-medium">{income.member_name}</p>
                     <p className="text-sm text-muted-foreground">
-                      ${Number(income.amount).toFixed(2)} / {income.period}
+                      ₹{Number(income.amount).toFixed(2)} / {income.period}
                     </p>
                   </div>
                   <Button
