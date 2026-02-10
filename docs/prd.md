@@ -23,9 +23,23 @@ Create a modern, trustworthy fintech landing page that explains the product, how
 - People who want budgeting help without spreadsheets
 
 ### 2.3 Design & UI Style
-- Clean fintech aesthetic
-- White + soft green/blue palette
-- Modern typography
+**Design Reference:**
+- Use image.png as the exact visual reference for landing page design
+- Match colors, fonts, and overall style from image.png precisely
+- Maintain the layout structure and visual hierarchy shown in the reference image
+- Apply professional fading effects and transitions as demonstrated in the reference
+
+**Color Palette:**
+- Extract and replicate the exact color scheme from image.png
+- Maintain consistency with purple/violet accent colors
+- Use white and light backgrounds as shown in reference
+
+**Typography:**
+- Match font families, sizes, and weights from image.png as closely as possible
+- Maintain text hierarchy and spacing
+
+**Visual Elements:**
+- Clean fintech aesthetic matching reference design
 - Smooth scroll animations
 - Fully responsive (mobile-first)
 - Trust-focused design (no clutter)
@@ -33,6 +47,19 @@ Create a modern, trustworthy fintech landing page that explains the product, how
 ### 2.4 Landing Page Structure
 
 #### 2.4.1 Hero Section (Above the Fold)
+**Layout Reference:**
+- Follow the exact layout structure shown in image.png
+- Position elements according to reference design
+
+**Background Image:**
+- Use image-2.png as the background image for the hero section
+- Position the background image beneath the heading text
+- Apply professional fading effect to image-2.png:
+  - Gradient overlay from solid color at top to transparent
+  - Smooth transition that doesn't obscure text readability
+  - Blend the image naturally with the page background
+  - Ensure text remains clearly visible and legible
+
 **Headline (Big & Bold):**
 Manage Your Money Smarter with AI — Built for India 🇮🇳
 
@@ -200,6 +227,7 @@ Take Control of Your Money — Starting Today
 - Finance-only responses from AI
 - Clear rejection message for non-financial queries: I'm designed to assist only with personal finance, budgeting, and expense-tracking questions.
 - AI can read and analyze all payment transactions made through the integrated payment app
+- **Clear Chat Button**: Small, clearly visible button in the chatbot interface that completely erases all chat history and context when clicked
 
 ### 3.3 Document Upload System
 - Upload receipts and bank statements (PDF/image/CSV)
@@ -396,22 +424,61 @@ Clear disclaimer must be displayed: This assistant provides budgeting insights o
 ## 8. UI/UX Requirements
 
 ### 8.1 Design Reference
-Use the design shown in image.png as the exact visual reference for the application interface.
+**All Application Pages UI Design:**
+- Use image.png, image-2.png, and image-3.png as exact visual references for all internal application pages
+- Match design elements, color scheme, typography, icons, and layout precisely across all pages
+- Replicate visual hierarchy and spacing from reference images
+- Apply color palette from image-3.png:
+  - Primary: #E62DA9 (vibrant pink/magenta)
+  - Secondary: #FEDC85 (soft yellow)
+  - Background: #FFFFFF (white)
+  - Dark text: #0D0C10 (near black)
+  - Light background: soft purple/lavender tones
+- Typography from image-2.png:
+  - Font family: SF Pro Display
+  - Font weights: Thin, Light, Regular, Medium, Bold
+  - Match font sizes and hierarchy from reference
+- Icons and visual elements:
+  - Use icon styles shown in image.png
+  - Maintain consistent icon design language
+  - Ensure all icons are clearly visible
+- Color visibility requirements:
+  - All text must be clearly legible against backgrounds
+  - No color overlapping that obscures content
+  - Sufficient contrast ratios for all UI elements
+  - All components (icons, text, buttons) must be fully visible
+  - No design elements should be hidden or obscured by color choices
+
+**Landing Page Design:**
+- Maintain existing landing page design as previously specified
+- Use image.png reference for landing page interface
+- Preserve landing page color scheme and typography
 
 ### 8.2 Design Style
-- Modern fintech theme
+**All Application Pages:**
+- Modern chat-based interface matching image.png reference
+- Exact color replication from image-3.png color palette
+- Typography matching image-2.png SF Pro Display font family
+- Icon styles from image.png
+- Responsive layout
+- Professional transitions and animations
+- Clean, uncluttered interface
+- All UI elements clearly visible with proper contrast
+
+**Landing Page:**
+- Maintain existing design style as specified
 - Soft colors, clean typography
 - Responsive layout
-- Maintain existing UI design and visual consistency
 
 ### 8.3 Layout Structure
 Clear separation between:
-- Landing page
-- Chat interface
-- Budget management
-- Dashboard
-- Transaction page with integrated payment button
-- Demo payment app interface
+- Landing page (existing design preserved)
+- Chat interface (updated to match image.png, image-2.png, image-3.png references)
+- Budget management (updated to match image.png, image-2.png, image-3.png references)
+- Dashboard (updated to match image.png, image-2.png, image-3.png references)
+- Transaction page with integrated payment button (updated to match image.png, image-2.png, image-3.png references)
+- Demo payment app interface (updated to match image.png, image-2.png, image-3.png references)
+- All other application pages (updated to match image.png, image-2.png, image-3.png references)
 
 ### 8.4 User Experience
 - Smooth transitions and animations
@@ -420,6 +487,7 @@ Clear separation between:
 - Seamless payment flow
 - Instant feedback on payment completion
 - Real-time numerical updates across all pages
+- Clear chat history deletion with confirmation
 
 ### 8.5 Mobile Navigation Enhancement
 **Mobile Menu (Hamburger Menu):**
@@ -435,7 +503,7 @@ Clear separation between:
 ## 9. Preservation Requirements
 
 ### 9.1 Existing Functionalities
-All current features, UI design, and chatbot functionalities must remain unchanged and fully operational:
+All current features and chatbot functionalities must remain unchanged and fully operational:
 - User authentication and mode switching
 - Document upload system
 - Salary and income setup
@@ -445,6 +513,34 @@ All current features, UI design, and chatbot functionalities must remain unchang
 - Alerts and notifications
 - AI chat interface and responses
 - Existing transaction management
+- All working application pages and interfaces
+- All backend logic and data processing
+- All API integrations
+- All security measures
 
 ### 9.2 Enhancement Focus
-The landing page and mobile navigation menu are additions that enhance the existing application without modifying or removing any current capabilities.
+The following are improvements that enhance the existing application without modifying or removing any current capabilities:
+- Clear chat button addition in chatbot interface
+- UI design updates across all internal pages to match image.png, image-2.png, and image-3.png references
+- Color palette updates to match image-3.png
+- Typography updates to match image-2.png SF Pro Display
+- Icon style updates to match image.png
+- Improved color visibility and contrast across all components
+- Mobile navigation menu enhancement
+- Landing page design preserved as previously specified
+
+### 9.3 Design Update Scope
+- Update UI design, colors, fonts, and icons for all internal application pages
+- Ensure all design changes maintain or improve usability
+- Preserve all existing functionality during design updates
+- Maintain responsive behavior across all devices
+- Ensure all text, icons, and components remain clearly visible
+- Prevent any color overlapping or visibility issues
+
+## 10. Reference Files
+
+1. Landing page design reference: image.png
+2. Hero section background image: image-2.png
+3. Application pages UI design reference: image.png
+4. Typography reference: image-2.png
+5. Color palette reference: image-3.png

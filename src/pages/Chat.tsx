@@ -6,18 +6,32 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getChatHistory } from '@/db/api';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { getChatHistory, clearChatHistory } from '@/db/api';
 import { supabase } from '@/db/supabase';
 import type { ChatMessage } from '@/types';
-import { Send, Bot, User, AlertCircle } from 'lucide-react';
+import { Send, Bot, User, AlertCircle, Trash2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Chat() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [streamingMessage, setStreamingMessage] = useState('');
+  const [clearing, setClearing] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -149,6 +163,29 @@ export default function Chat() {
     }
   };
 
+  const handleClearChat = async () => {
+    if (!user || clearing) return;
+    
+    setClearing(true);
+    try {
+      await clearChatHistory(user.id);
+      setMessages([]);
+      toast({
+        title: 'Chat cleared',
+        description: 'All chat history has been deleted successfully.',
+      });
+    } catch (error) {
+      console.error('Error clearing chat:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to clear chat history. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setClearing(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-6 space-y-4">
@@ -160,9 +197,38 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)] lg:h-[calc(100vh-4rem)]">
-      <div className="p-4 md:p-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <h1 className="text-2xl md:text-3xl font-bold">AI Finance Assistant</h1>
-        <p className="text-sm md:text-base text-muted-foreground">Ask me anything about your finances</p>
+      <div className="p-4 md:p-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold">AI Finance Assistant</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Ask me anything about your finances</p>
+        </div>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="gap-2 rounded-full"
+              disabled={messages.length === 0 || clearing}
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Clear Chat</span>
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Clear chat history?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete all your chat messages and conversation history. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleClearChat} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Clear All
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       <Alert className="m-4 md:m-6 mb-0">

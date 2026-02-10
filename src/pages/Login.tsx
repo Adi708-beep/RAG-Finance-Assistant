@@ -71,28 +71,28 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-background gradient-bg-1 p-4">
+      <Card className="w-full max-w-md floating-card border-none shadow-2xl">
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center mb-4">
-            <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
-              <IndianRupee className="h-6 w-6 text-primary-foreground" />
+            <div className="h-16 w-16 rounded-3xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+              <IndianRupee className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">Finance Assistant</CardTitle>
-          <CardDescription>Manage your personal and family finances with AI</CardDescription>
+          <CardTitle className="text-3xl font-bold">RupeeWise</CardTitle>
+          <CardDescription className="text-base">Manage your personal and family finances with AI</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 rounded-full">
+              <TabsTrigger value="signin" className="rounded-full">Sign In</TabsTrigger>
+              <TabsTrigger value="signup" className="rounded-full">Sign Up</TabsTrigger>
             </TabsList>
 
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 {error && (
-                  <Alert variant="destructive">
+                  <Alert variant="destructive" className="rounded-2xl">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
@@ -107,6 +107,7 @@ export default function Login() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
+                    className="rounded-2xl"
                   />
                 </div>
 
@@ -119,10 +120,11 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    className="rounded-2xl"
                   />
                 </div>
 
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full rounded-full bg-gradient-to-r from-primary to-secondary hover:opacity-90" disabled={loading}>
                   {loading ? 'Signing in...' : 'Sign In'}
                 </Button>
               </form>
@@ -131,7 +133,7 @@ export default function Login() {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 {error && (
-                  <Alert variant="destructive">
+                  <Alert variant="destructive" className="rounded-2xl">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
@@ -146,6 +148,7 @@ export default function Login() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
+                    className="rounded-2xl"
                   />
                   <p className="text-xs text-muted-foreground">At least 3 characters, letters, numbers, and underscores only</p>
                 </div>
@@ -159,11 +162,12 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    className="rounded-2xl"
                   />
                   <p className="text-xs text-muted-foreground">At least 6 characters</p>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full rounded-full bg-gradient-to-r from-primary to-secondary hover:opacity-90" disabled={loading}>
                   {loading ? 'Creating account...' : 'Sign Up'}
                 </Button>
               </form>

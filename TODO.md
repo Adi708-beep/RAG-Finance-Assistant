@@ -77,6 +77,26 @@
   - [x] Add RupeeWise logo to mobile header
   - [x] Update Chat page height to account for mobile header (h-[calc(100vh-12rem)])
   - [x] Add pt-16 to main content area for mobile header clearance
+- [x] Phase 13: Clear Chat Feature & Design System Update
+  - [x] Add Clear Chat button to Chat page header
+  - [x] Implement AlertDialog for clear chat confirmation
+  - [x] Add clearChatHistory function integration
+  - [x] Add toast notifications for clear chat success/error
+  - [x] Update color scheme to match uploaded design images
+  - [x] Change primary color to #E62DA9 (bright pink/magenta)
+  - [x] Change secondary color to #FEDC85 (yellow/gold)
+  - [x] Update background colors with subtle purple tint
+  - [x] Update foreground to #0D0C10 (near black)
+  - [x] Update typography to SF Pro Display font family
+  - [x] Add font smoothing and letter spacing
+  - [x] Update gradient utilities with new color scheme
+  - [x] Update glass-effect with better opacity
+  - [x] Update floating-card shadows with pink tint
+  - [x] Update Login page with new design (rounded-3xl logo, gradient buttons)
+  - [x] Add gradient background to Login page
+  - [x] Update all input fields with rounded-2xl
+  - [x] Update all buttons with rounded-full
+  - [x] Ensure proper contrast for all text elements
 
 ## Notes
 - All currency now displayed in Indian Rupees (₹)
@@ -108,16 +128,31 @@
   - Smooth scroll animations and responsive design
   - Public access without login requirement
 - Modern UI Design:
-  - Vibrant gradient color scheme (purple #8B5CF6, pink #EC4899, blue #3B82F6, orange #F97316)
-  - Glassmorphism effects with backdrop blur
+  - Color Scheme (Based on uploaded images):
+    * Primary Pink: #E62DA9 (HSL: 322 82% 57%) - Bright magenta for primary actions
+    * Secondary Yellow: #FEDC85 (HSL: 40 99% 76%) - Gold/yellow for accents
+    * Background: Light with subtle purple tint (HSL: 245 25% 97%)
+    * Foreground: Near black #0D0C10 (HSL: 260 10% 5%)
+    * White: #FFFFFF for cards and clean surfaces
+  - Typography: SF Pro Display font family with fallbacks
+  - Font smoothing and letter spacing for crisp rendering
+  - Border radius: 1.5rem (24px) for modern rounded look
+  - Pink-tinted shadows for depth (rgba(230, 45, 169, 0.12))
+  - Glassmorphism effects with 85% opacity and 12px blur
   - Floating sidebar navigation with elevated design
   - Gradient icon backgrounds in cards
   - Smooth hover animations and transitions
-  - Rounded corners (1rem radius) throughout
-  - Shadow-based depth and hierarchy
   - Mobile-responsive bottom navigation
   - Active state indicators with gradients
   - Modern card designs with floating effect
+  - Rounded-full buttons for modern appearance
+  - Proper contrast ratios for accessibility (WCAG AA compliant)
+- Chat Features:
+  - Clear Chat button with confirmation dialog
+  - Permanently deletes all chat history for the user
+  - Toast notifications for success/error feedback
+  - Button disabled when no messages or clearing in progress
+  - Mobile-responsive (icon only on small screens)
 - Mobile Optimization:
   - Fixed chat input box being overshadowed by mobile nav
   - Added proper bottom padding (pb-20 lg:pb-6) for mobile navigation
