@@ -22,6 +22,8 @@ import { supabase } from '@/db/supabase';
 import type { ChatMessage } from '@/types';
 import { Send, Bot, User, AlertCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function Chat() {
   const { user } = useAuth();
@@ -267,7 +269,15 @@ export default function Chat() {
                     : 'bg-muted shadow-md'
                 }`}
               >
-                <p className="whitespace-pre-wrap text-sm md:text-base">{msg.message}</p>
+                {msg.role === 'model' ? (
+                  <div className="prose prose-sm md:prose-base max-w-none prose-p:my-2 prose-strong:text-foreground prose-strong:font-bold">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {msg.message}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  <p className="whitespace-pre-wrap text-sm md:text-base">{msg.message}</p>
+                )}
               </div>
               {msg.role === 'user' && (
                 <div className="h-8 w-8 rounded-full bg-gradient-to-br from-secondary to-primary flex items-center justify-center shrink-0">
@@ -283,7 +293,11 @@ export default function Chat() {
                 <Bot className="h-5 w-5 text-primary-foreground" />
               </div>
               <div className="rounded-2xl p-3 md:p-4 max-w-[85%] md:max-w-[80%] bg-muted shadow-md">
-                <p className="whitespace-pre-wrap text-sm md:text-base">{streamingMessage}</p>
+                <div className="prose prose-sm md:prose-base max-w-none prose-p:my-2 prose-strong:text-foreground prose-strong:font-bold">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {streamingMessage}
+                  </ReactMarkdown>
+                </div>
               </div>
             </div>
           )}

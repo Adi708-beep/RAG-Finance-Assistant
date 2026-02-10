@@ -97,6 +97,18 @@
   - [x] Update all input fields with rounded-2xl
   - [x] Update all buttons with rounded-full
   - [x] Ensure proper contrast for all text elements
+- [x] Phase 14: Markdown Rendering for Chat Responses
+  - [x] Install react-markdown and remark-gfm packages
+  - [x] Install @tailwindcss/typography plugin
+  - [x] Add typography plugin to tailwind.config.js
+  - [x] Update Chat page to use ReactMarkdown for bot messages
+  - [x] Add custom prose styles for markdown rendering
+  - [x] Ensure bold text (**text**) renders properly with font-weight: 700
+  - [x] Style strong tags with foreground color for visibility
+  - [x] Add proper spacing for paragraphs, lists, and headings
+  - [x] Style code blocks with muted background
+  - [x] Apply markdown rendering to both saved and streaming messages
+  - [x] Keep user messages as plain text (no markdown rendering)
 
 ## Notes
 - All currency now displayed in Indian Rupees (₹)
@@ -153,6 +165,15 @@
   - Toast notifications for success/error feedback
   - Button disabled when no messages or clearing in progress
   - Mobile-responsive (icon only on small screens)
+  - Markdown rendering for bot responses:
+    * Bold text with **text** renders properly with font-weight: 700
+    * Italic text with *text* renders in italics
+    * Code blocks with proper syntax highlighting
+    * Lists (ordered and unordered) with proper formatting
+    * Headings with appropriate sizes and weights
+    * Links are clickable and styled
+    * All markdown features supported via react-markdown and remark-gfm
+    * User messages remain as plain text (no markdown rendering)
 - Mobile Optimization:
   - Fixed chat input box being overshadowed by mobile nav
   - Added proper bottom padding (pb-20 lg:pb-6) for mobile navigation
