@@ -172,6 +172,12 @@ All colors MUST be HSL.
 
 /* Custom prose styles for markdown rendering in chat */
 @layer components {
+  .prose {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  
   .prose strong {
     color: hsl(var(--foreground));
     font-weight: 700;
@@ -180,16 +186,21 @@ All colors MUST be HSL.
   .prose p {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .prose ul, .prose ol {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
   }
   
   .prose li {
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .prose code {
@@ -197,6 +208,8 @@ All colors MUST be HSL.
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
     font-size: 0.875em;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .prose pre {
@@ -204,6 +217,12 @@ All colors MUST be HSL.
     padding: 0.75rem;
     border-radius: 0.5rem;
     overflow-x: auto;
+    max-width: 100%;
+  }
+  
+  .prose pre code {
+    background-color: transparent;
+    padding: 0;
   }
   
   .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
@@ -211,5 +230,20 @@ All colors MUST be HSL.
     font-weight: 600;
     margin-top: 1rem;
     margin-bottom: 0.5rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .prose a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .prose table {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
   }
 }

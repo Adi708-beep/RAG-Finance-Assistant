@@ -109,6 +109,12 @@
   - [x] Style code blocks with muted background
   - [x] Apply markdown rendering to both saved and streaming messages
   - [x] Keep user messages as plain text (no markdown rendering)
+  - [x] Fix mobile text cutoff issue
+  - [x] Change max-width to calc(100%-3rem) on mobile to account for avatar
+  - [x] Add break-words and overflow-hidden to chat bubbles
+  - [x] Add word-wrap and overflow-wrap to all prose elements
+  - [x] Ensure proper text wrapping for long words and URLs
+  - [x] Add overflow-x: auto for code blocks and tables
 
 ## Notes
 - All currency now displayed in Indian Rupees (₹)

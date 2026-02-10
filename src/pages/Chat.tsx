@@ -263,20 +263,20 @@ export default function Chat() {
                 </div>
               )}
               <div
-                className={`rounded-2xl p-3 md:p-4 max-w-[85%] md:max-w-[80%] ${
+                className={`rounded-2xl p-3 md:p-4 max-w-[calc(100%-3rem)] md:max-w-[80%] break-words overflow-hidden ${
                   msg.role === 'user'
                     ? 'bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg'
                     : 'bg-muted shadow-md'
                 }`}
               >
                 {msg.role === 'model' ? (
-                  <div className="prose prose-sm md:prose-base max-w-none prose-p:my-2 prose-strong:text-foreground prose-strong:font-bold">
+                  <div className="prose prose-sm md:prose-base max-w-none prose-p:my-2 prose-strong:text-foreground prose-strong:font-bold break-words">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {msg.message}
                     </ReactMarkdown>
                   </div>
                 ) : (
-                  <p className="whitespace-pre-wrap text-sm md:text-base">{msg.message}</p>
+                  <p className="whitespace-pre-wrap break-words text-sm md:text-base">{msg.message}</p>
                 )}
               </div>
               {msg.role === 'user' && (
@@ -292,8 +292,8 @@ export default function Chat() {
               <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0">
                 <Bot className="h-5 w-5 text-primary-foreground" />
               </div>
-              <div className="rounded-2xl p-3 md:p-4 max-w-[85%] md:max-w-[80%] bg-muted shadow-md">
-                <div className="prose prose-sm md:prose-base max-w-none prose-p:my-2 prose-strong:text-foreground prose-strong:font-bold">
+              <div className="rounded-2xl p-3 md:p-4 max-w-[calc(100%-3rem)] md:max-w-[80%] bg-muted shadow-md break-words overflow-hidden">
+                <div className="prose prose-sm md:prose-base max-w-none prose-p:my-2 prose-strong:text-foreground prose-strong:font-bold break-words">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {streamingMessage}
                   </ReactMarkdown>
