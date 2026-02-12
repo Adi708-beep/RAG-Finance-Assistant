@@ -115,10 +115,53 @@
   - [x] Add word-wrap and overflow-wrap to all prose elements
   - [x] Ensure proper text wrapping for long words and URLs
   - [x] Add overflow-x: auto for code blocks and tables
+- [x] Phase 15: Production-Level RAG Enhancement
+  - [x] Add query intent detection (spending_query, budget_creation, budget_analysis, savings_query, anomaly_detection)
+  - [x] Add financial keyword extraction from user queries
+  - [x] Add category detection (groceries, rent, transport, entertainment, etc.)
+  - [x] Add timeframe detection (today, week, month, year)
+  - [x] Implement dynamic context retrieval based on query analysis
+  - [x] Add relevance scoring for transaction filtering
+  - [x] Increase transaction limit to 100 for category-specific queries
+  - [x] Add time-based transaction filtering
+  - [x] Calculate spending trends (average daily spending over 30 days)
+  - [x] Implement anomaly detection using statistical analysis (mean + 2 std dev)
+  - [x] Add comprehensive budget vs actual analysis with status indicators
+  - [x] Calculate percentage used for each budget category
+  - [x] Add status indicators (over, warning, good) for budget categories
+  - [x] Include uploaded document count in context
+  - [x] Implement sliding window for chat history (last 20 messages, use 10)
+  - [x] Enhance system prompt with structured financial data
+  - [x] Add emoji indicators for budget status (🔴 over, ⚠️ warning, ✅ good)
+  - [x] Format budget analysis with clear breakdowns
+  - [x] Include unusual transaction detection in context
+  - [x] Add query analysis feedback in system prompt
+  - [x] Improve OCR document metadata extraction
+  - [x] Add document processing timestamp
+  - [x] Add text length metadata for documents
+  - [x] Enhance transaction parsing prompt with detailed instructions
+  - [x] Add category descriptions for better AI categorization
+  - [x] Improve date parsing logic with year inference
+  - [x] Add merchant name extraction guidelines
+  - [x] Deploy enhanced gemini-chat Edge Function
+  - [x] Deploy enhanced ocr-process Edge Function
 
 ## Notes
 - All currency now displayed in Indian Rupees (₹)
 - OCR processing now automatically suggests budgets based on spending patterns
+- Production-Level RAG (Retrieval-Augmented Generation) System:
+  - **Query Intelligence**: Automatic intent detection (spending queries, budget analysis, savings, anomaly detection)
+  - **Smart Context Retrieval**: Dynamic transaction filtering based on detected categories and timeframes
+  - **Financial Keyword Extraction**: Identifies categories (groceries, rent, transport, etc.) and time periods (today, week, month, year)
+  - **Relevance Scoring**: Prioritizes most relevant transactions for each query
+  - **Spending Trends**: Calculates average daily spending over 30-day rolling window
+  - **Anomaly Detection**: Statistical analysis (mean + 2 standard deviations) to identify unusual transactions
+  - **Budget Analysis**: Real-time budget vs actual comparison with status indicators (🔴 over, ⚠️ warning, ✅ good)
+  - **Sliding Window Context**: Maintains last 20 chat messages, uses most recent 10 for context
+  - **Document Indexing**: Tracks uploaded documents with metadata (text length, processing timestamp)
+  - **Enhanced Prompts**: Structured system prompts with comprehensive financial data formatting
+  - **Markdown Responses**: AI responses use bold text for key numbers and insights
+  - **Production-Ready**: Optimized for accuracy, performance, and scalability
 - Dashboard enhanced with:
   - Sliders for each budget category to track additional spending
   - Manual expense input dialog with category selection

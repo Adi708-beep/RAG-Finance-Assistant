@@ -6,7 +6,7 @@
 RupeeWise – AI-Powered Personal & Family Finance Assistant
 
 ### 1.2 Application Description
-A production-ready fintech web application that enables users to upload financial documents, track expenses, set monthly/yearly budget goals, manage personal or family income, and interact with a finance-only AI assistant powered by Google Gemini API using Retrieval-Augmented Generation (RAG) architecture. The application includes an integrated demo payment system for simulating transactions and a comprehensive landing page.
+A production-ready fintech web application that enables users to upload financial documents, track expenses, set monthly/yearly budget goals, manage personal or family income, and interact with a finance-only AI assistant powered by Google Gemini API using Retrieval-Augmented Generation (RAG) architecture enhanced with Pathway framework. The application includes an integrated demo payment system for simulating transactions and a comprehensive landing page.
 
 ### 1.3 Application Type
 Full-stack web application with responsive design (desktop + mobile)
@@ -363,30 +363,86 @@ If user asks anything outside finance, respond exactly: I'm designed to assist o
 - Political or general questions
 - Legal or tax evasion advice
 
-## 5. RAG Architecture
+## 5. RAG Architecture with Pathway Framework
 
-### 5.1 Retrieval Sources
+### 5.1 Pathway Framework Integration
+**Purpose:**
+Enhance the RAG system with real-time data processing, streaming capabilities, and production-level performance using Pathway framework.
+
+**Core Capabilities:**
+- Real-time streaming data processing for financial transactions
+- Incremental updates to vector embeddings
+- Low-latency retrieval for chat responses
+- Efficient document processing pipeline
+- Automatic synchronization of data changes
+
+### 5.2 Retrieval Sources
 - Uploaded receipts
 - Transaction history
 - Budget goals
 - Financial rules
 - Payment app transaction records
 
-### 5.2 Response Flow
-1. Classify query as financial
-2. Retrieve relevant data (including payment app transactions)
-3. Perform calculations in backend
-4. Inject facts into Gemini prompt
-5. Gemini explains results
+### 5.3 Pathway-Enhanced Data Pipeline
+**Document Processing Pipeline:**
+- Real-time ingestion of uploaded receipts and bank statements
+- Streaming extraction of transaction data (amount, date, merchant, category)
+- Incremental vector embedding generation
+- Automatic indexing for fast retrieval
 
-### 5.3 RAG Behavior
+**Transaction Stream Processing:**
+- Real-time processing of payment app transactions
+- Continuous updates to spending patterns
+- Live anomaly detection
+- Streaming budget calculations
+
+**Vector Database Management:**
+- Pathway-managed vector store for embeddings
+- Incremental updates without full reindexing
+- Efficient similarity search for RAG retrieval
+- Automatic cleanup of outdated embeddings
+
+### 5.4 Response Flow with Pathway
+1. Classify query as financial
+2. Pathway streams relevant data from multiple sources:
+   - User transaction history
+   - Uploaded documents
+   - Budget goals
+   - Payment app records
+3. Real-time retrieval of most relevant context
+4. Perform calculations in backend
+5. Inject facts into Gemini prompt with retrieved context
+6. Gemini explains results based on real-time data
+
+### 5.5 Real-Time Processing Features
+**Streaming Updates:**
+- Dashboard metrics update in real-time via Pathway streaming
+- Budget allocations recalculated instantly on new transactions
+- Chat responses reflect latest financial state
+- Alerts triggered immediately on threshold breaches
+
+**Incremental Learning:**
+- Spending patterns updated continuously
+- Category predictions improve with each transaction
+- Budget recommendations adapt to changing behavior
+
+### 5.6 RAG Behavior
 - AI answers based on:
-  - Retrieved user transactions
-  - Uploaded documents
+  - Retrieved user transactions (via Pathway streaming)
+  - Uploaded documents (processed through Pathway pipeline)
   - Budget goals
   - Financial rules
-  - Payment app transaction history
+  - Payment app transaction history (real-time stream)
 - AI must NOT guess or hallucinate numbers
+- All data retrieval powered by Pathway for production-level performance
+
+### 5.7 Performance Optimization
+**Pathway Advantages:**
+- Sub-second latency for data retrieval
+- Efficient memory usage with streaming architecture
+- Scalable to large transaction volumes
+- Automatic handling of data updates without manual reprocessing
+- Production-ready reliability and fault tolerance
 
 ## 6. Backend & Data Structure
 
@@ -399,12 +455,22 @@ If user asks anything outside finance, respond exactly: I'm designed to assist o
 - Budget goals
 - Alerts
 - Payment app transaction records
+- Vector embeddings (managed by Pathway)
 
 ### 6.2 Data Rules
 - All financial calculations done by backend logic
 - AI only explains results
 - No cross-user data access
 - Real-time synchronization of payment transactions across all components
+- Pathway handles streaming data updates and vector store management
+
+### 6.3 Pathway Integration Points
+- Document upload processing
+- Transaction stream ingestion
+- Vector embedding generation and updates
+- Real-time retrieval for RAG queries
+- Dashboard data streaming
+- Alert trigger processing
 
 ## 7. Security & Compliance
 
@@ -413,6 +479,8 @@ If user asks anything outside finance, respond exactly: I'm designed to assist o
 - No sensitive data exposed in responses
 - Mask sensitive data in responses
 - Enforce user data isolation
+- Pathway data streams isolated per user
+- Secure vector store access controls
 
 ### 7.2 Disclaimer
 Clear disclaimer must be displayed: This assistant provides budgeting insights only and does not offer investment or legal advice. The integrated payment system is a demo feature for simulation purposes only.
@@ -486,7 +554,7 @@ Clear separation between:
 - Clear visual hierarchy
 - Seamless payment flow
 - Instant feedback on payment completion
-- Real-time numerical updates across all pages
+- Real-time numerical updates across all pages powered by Pathway streaming
 - Clear chat history deletion with confirmation
 
 ### 8.5 Mobile Navigation Enhancement
@@ -520,6 +588,10 @@ All current features and chatbot functionalities must remain unchanged and fully
 
 ### 9.2 Enhancement Focus
 The following are improvements that enhance the existing application without modifying or removing any current capabilities:
+- Pathway framework integration for RAG enhancement
+- Real-time streaming data processing
+- Improved retrieval performance and accuracy
+- Production-level scalability and reliability
 - Clear chat button addition in chatbot interface
 - UI design updates across all internal pages to match image.png, image-2.png, and image-3.png references
 - Color palette updates to match image-3.png
@@ -536,6 +608,15 @@ The following are improvements that enhance the existing application without mod
 - Maintain responsive behavior across all devices
 - Ensure all text, icons, and components remain clearly visible
 - Prevent any color overlapping or visibility issues
+
+### 9.4 Pathway Integration Scope
+- Enhance RAG system with Pathway framework
+- Implement real-time data streaming and processing
+- Optimize vector database management
+- Improve retrieval latency and accuracy
+- Maintain all existing AI capabilities and responses
+- Preserve current data storage and security measures
+- Ensure backward compatibility with existing features
 
 ## 10. Reference Files
 

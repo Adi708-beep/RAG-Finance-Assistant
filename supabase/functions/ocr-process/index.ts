@@ -62,17 +62,47 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Update document with OCR text
+    // Update document with OCR text and metadata
+    const documentMetadata = {
+      ocr_text: extractedText,
+      text_length: extractedText.length,
+      processed_at: new Date().toISOString()
+    };
+    
     await supabase
       .from('documents')
-      .update({ ocr_text: extractedText })
+      .update(documentMetadata)
       .eq('id', documentId);
 
     // Use Gemini to parse structured transaction data
     const geminiApiKey = Deno.env.get('INTEGRATIONS_API_KEY');
     const geminiUrl = 'https://app-9hnntffjcnb5-api-VaOwP8E7dJqa.gateway.appmedo.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse';
 
-    const parsePrompt = `Extract transaction data from this receipt/bank statement text. Return ONLY a valid JSON array of transactions with this exact format:
+    const parsePrompt = `You are an expert financial document parser. Extract ALL transaction data from this receipt/bank statement text with high accuracy.
+
+IMPORTANT INSTRUCTIONS:
+1. Extract EVERY transaction you can find
+2. For dates: Use YYYY-MM-DD format. If year is missing, use 2026. If only day/month given, infer from context.
+3. For amounts: Extract numeric values only (remove ₹, Rs, INR symbols)
+4. For merchants: Use the business/store name. If unclear, use descriptive text.
+5. For categories: Choose the MOST appropriate category from the list below
+6. For descriptions: Include relevant details (item names, transaction type, etc.)
+
+VALID CATEGORIES (choose one):
+- rent: Housing, apartment, rent payments
+- groceries: Supermarkets, food stores, grocery shopping
+- transport: Uber, Ola, petrol, fuel, taxi, auto, metro, bus
+- entertainment: Movies, Netflix, Spotify, games, concerts
+- savings: Savings account deposits, investments
+- emergency_fund: Emergency savings, contingency funds
+- utilities: Electricity, water, internet, phone bills
+- healthcare: Medical, doctor, hospital, pharmacy, medicines
+- education: Courses, books, tuition, school fees
+- dining: Restaurants, Zomato, Swiggy, food delivery, cafes
+- shopping: Amazon, Flipkart, clothes, electronics, online shopping
+- other: Anything that doesn't fit above categories
+
+Return ONLY a valid JSON array with this EXACT format:
 [
   {
     "amount": 123.45,
@@ -83,11 +113,9 @@ Deno.serve(async (req) => {
   }
 ]
 
-Valid categories: rent, groceries, transport, entertainment, savings, emergency_fund, utilities, healthcare, education, dining, shopping, other
+If no transactions found, return an empty array: []
 
-If no transactions found, return an empty array [].
-
-Text to parse:
+TEXT TO PARSE:
 ${extractedText}`;
 
     const geminiRequest = {
