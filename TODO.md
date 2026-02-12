@@ -145,10 +145,50 @@
   - [x] Add merchant name extraction guidelines
   - [x] Deploy enhanced gemini-chat Edge Function
   - [x] Deploy enhanced ocr-process Edge Function
+- [x] Phase 16: Pathway-Inspired Real-time Processing Framework
+  - [x] Create real-time data processing module (realtime-processor.ts)
+  - [x] Implement TransactionPipeline for real-time transaction monitoring
+  - [x] Add real-time anomaly detection with statistical analysis
+  - [x] Implement severity levels (low, medium, high) for anomalies
+  - [x] Add real-time budget monitoring and alerts
+  - [x] Implement BudgetMonitoringPipeline for budget changes
+  - [x] Create DocumentProcessingPipeline for document status tracking
+  - [x] Build RealtimeProcessingManager to coordinate all pipelines
+  - [x] Implement Supabase Realtime subscriptions for data changes
+  - [x] Add automatic anomaly detection on new transactions
+  - [x] Add automatic budget alerts at 80% and 100% thresholds
+  - [x] Create RealtimeContext for app-wide real-time processing
+  - [x] Integrate RealtimeProvider into App.tsx
+  - [x] Add toast notifications for anomalies and budget alerts
+  - [x] Implement automatic cleanup on user logout
+  - [x] Add document processing completion notifications
+  - [x] Track recent anomalies (last 10) in context
+  - [x] Track recent alerts (last 10) in context
+  - [x] Implement streaming data pipeline architecture
+  - [x] Add real-time statistics updates
+  - [x] Enable production-ready real-time monitoring
 
 ## Notes
 - All currency now displayed in Indian Rupees (₹)
 - OCR processing now automatically suggests budgets based on spending patterns
+- **Pathway-Inspired Real-time Processing Framework**:
+  - **Architecture**: Streaming data pipeline system inspired by Pathway framework patterns
+  - **TransactionPipeline**: Real-time monitoring of all new transactions with automatic processing
+  - **Anomaly Detection**: Statistical analysis (Z-score) to detect unusual spending patterns
+    * High severity: >3 standard deviations from mean (immediate alert)
+    * Medium severity: >2 standard deviations (warning notification)
+    * Automatic toast notifications for unusual transactions
+  - **Budget Monitoring**: Real-time budget tracking with automatic alerts
+    * Warning at 80% budget usage
+    * Alert at 100% budget exceeded
+    * Category-specific monitoring for all 12 budget categories
+  - **Document Processing**: Real-time tracking of document upload and OCR processing
+    * Automatic notifications when documents are processed
+    * Transaction extraction completion alerts
+  - **Supabase Realtime**: Leverages Supabase real-time subscriptions for instant updates
+  - **RealtimeContext**: App-wide context for accessing real-time processing features
+  - **Automatic Cleanup**: Pipelines automatically stop on user logout
+  - **Production-Ready**: Optimized for performance and scalability
 - Production-Level RAG (Retrieval-Augmented Generation) System:
   - **Query Intelligence**: Automatic intent detection (spending queries, budget analysis, savings, anomaly detection)
   - **Smart Context Retrieval**: Dynamic transaction filtering based on detected categories and timeframes
