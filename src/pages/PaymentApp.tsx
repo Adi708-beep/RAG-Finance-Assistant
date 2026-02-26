@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { createTransaction } from '@/db/api';
 import type { TransactionCategory } from '@/types';
 import { CATEGORY_LABELS } from '@/types';
+import QRCodeDataUrl from '@/components/ui/qrcodedataurl';
 import { 
   ShoppingCart, 
   Utensils, 
@@ -168,6 +169,24 @@ export default function PaymentApp() {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const payeeUpiId = (import.meta.env.VITE_UPI_PAYEE_ID as string | undefined)?.trim();
+  const payeeName = (import.meta.env.VITE_UPI_PAYEE_NAME as string | undefined)?.trim() || 'RupeeWise';
+
+  const buildUpiLink = (opts: {
+    pa: string;
+    pn: string;
+    am: number;
+    tn: string;
+  }) => {
+    const params = new URLSearchParams({
+      pa: opts.pa,
+      pn: opts.pn,
+      am: opts.am.toFixed(2),
+      cu: 'INR',
+      tn: opts.tn
+    });
+    return `upi://pay?${params.toString()}`;
+  };
 
   const handleMerchantSelect = (merchant: Merchant) => {
     setSelectedMerchant(merchant);
@@ -175,11 +194,20 @@ export default function PaymentApp() {
     setShowConfirmDialog(true);
   };
 
-  const handlePayment = async () => {
+  const handleRecordPayment = async () => {
     if (!user || !selectedMerchant || !amount || parseFloat(amount) <= 0) {
       toast({
         title: 'Invalid payment',
         description: 'Please enter a valid amount',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (!payeeUpiId) {
+      toast({
+        title: 'UPI not configured',
+        description: 'Set VITE_UPI_PAYEE_ID to generate the payment QR.',
         variant: 'destructive'
       });
       return;
@@ -196,7 +224,7 @@ export default function PaymentApp() {
         transaction_date: new Date().toISOString().split('T')[0],
         merchant: selectedMerchant.name,
         category: selectedMerchant.category,
-        description: `Payment to ${selectedMerchant.name} via Payment App`
+        description: `UPI payment (QR) recorded via Quick Pay`
       });
 
       setShowConfirmDialog(false);
@@ -304,6 +332,29 @@ export default function PaymentApp() {
                     onChange={(e) => setAmount(e.target.value)}
                   />
                 </div>
+
+                {payeeUpiId && amount && parseFloat(amount) > 0 ? (
+                  <div className="flex flex-col items-center gap-2 p-4 border rounded-lg">
+                    <QRCodeDataUrl
+                      text={buildUpiLink({
+                        pa: payeeUpiId,
+                        pn: payeeName,
+                        am: parseFloat(amount),
+                        tn: `Quick Pay: ${selectedMerchant.name}`
+                      })}
+                      width={180}
+                    />
+                    <p className="text-xs text-muted-foreground text-center">
+                      Scan this QR using Paytm or Google Pay.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-3 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">
+                      Configure <span className="font-medium">VITE_UPI_PAYEE_ID</span> to enable QR payments.
+                    </p>
+                  </div>
+                )}
                 <div className="p-4 bg-muted rounded-lg">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Category</span>
@@ -320,8 +371,11 @@ export default function PaymentApp() {
               <Button variant="outline" onClick={() => setShowConfirmDialog(false)} disabled={processing}>
                 Cancel
               </Button>
-              <Button onClick={handlePayment} disabled={processing || !amount || parseFloat(amount) <= 0}>
-                {processing ? 'Processing...' : 'Pay Now'}
+              <Button
+                onClick={handleRecordPayment}
+                disabled={processing || !amount || parseFloat(amount) <= 0 || !payeeUpiId}
+              >
+                {processing ? 'Recording...' : 'I Paid'}
               </Button>
             </DialogFooter>
           </DialogContent>

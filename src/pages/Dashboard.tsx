@@ -17,11 +17,13 @@ import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/types';
 import { Link } from 'react-router-dom';
 import { AlertCircle, TrendingUp, TrendingDown, IndianRupee, Target, Plus, CreditCard } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useRealtime } from '@/contexts/RealtimeContext';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { transactionPipeline } = useRealtime();
   const [budget, setBudget] = useState<Budget | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [totalIncome, setTotalIncome] = useState(0);
@@ -58,6 +60,30 @@ export default function Dashboard() {
 
     loadData();
   }, [user]);
+
+  useEffect(() => {
+    if (!user || !transactionPipeline) return;
+
+    const unsubscribe = transactionPipeline.addTransactionListener(async (tx) => {
+      setTransactions((prev) => {
+        if (prev.some((p) => p.id === tx.id)) return prev;
+        const next = [tx, ...prev];
+        next.sort((a, b) => String(b.transaction_date).localeCompare(String(a.transaction_date)));
+        return next;
+      });
+
+      try {
+        const nextAlerts = await getAlerts(user.id, true);
+        setAlerts(nextAlerts);
+      } catch {
+        // non-fatal
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [user, transactionPipeline]);
 
   const calculateSpending = () => {
     const spending: Record<string, number> = {};

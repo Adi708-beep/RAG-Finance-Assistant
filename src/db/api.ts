@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { getApiBaseUrl, backendJson } from '@/lib/backend-api';
 import type {
   Profile,
   IncomeRecord,
@@ -7,7 +8,6 @@ import type {
   Transaction,
   ChatMessage,
   Alert,
-  BudgetPeriod,
   TransactionCategory,
   UserMode
 } from '@/types';
@@ -105,10 +105,12 @@ export const getAllBudgets = async (userId: string) => {
 
 export const createBudget = async (budget: Omit<Budget, 'id' | 'created_at' | 'updated_at'>) => {
   // Deactivate existing budgets
-  await supabase
+  const { error: deactivateError } = await supabase
     .from('budgets')
     .update({ is_active: false })
     .eq('user_id', budget.user_id);
+
+  if (deactivateError) throw deactivateError;
 
   const { data, error } = await supabase
     .from('budgets')
@@ -199,6 +201,13 @@ export const getTransactionsByDateRange = async (userId: string, startDate: stri
 };
 
 export const createTransaction = async (transaction: Omit<Transaction, 'id' | 'created_at'>) => {
+  if (getApiBaseUrl()) {
+    return backendJson<Transaction>('/api/transactions/create', {
+      method: 'POST',
+      body: transaction
+    });
+  }
+
   const { data, error } = await supabase
     .from('transactions')
     .insert(transaction)

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRealtime } from '@/contexts/RealtimeContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -13,6 +14,7 @@ import { CreditCard } from 'lucide-react';
 
 export default function Transactions() {
   const { user } = useAuth();
+  const { transactionPipeline } = useRealtime();
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +36,21 @@ export default function Transactions() {
 
     loadTransactions();
   }, [user]);
+
+  useEffect(() => {
+    if (!transactionPipeline) return;
+
+    return transactionPipeline.addTransactionListener((transaction) => {
+      setTransactions((prev) => {
+        const next = [transaction, ...prev.filter((t) => t.id !== transaction.id)];
+        next.sort(
+          (a, b) =>
+            new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+        );
+        return next;
+      });
+    });
+  }, [transactionPipeline]);
 
   const filteredTransactions =
     filterCategory === 'all'

@@ -6,7 +6,7 @@ import { User, Shield, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Settings() {
-  const { user, profile, signOut } = useAuth();
+  const {profile, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -34,10 +34,10 @@ export default function Settings() {
             <p className="text-base md:text-lg font-medium">{profile?.username}</p>
           </div>
 
-          <div>
+         {/* <div>
             <p className="text-sm text-muted-foreground">Email</p>
             <p className="text-base md:text-lg font-medium">{profile?.email || user?.email}</p>
-          </div>
+          </div> */}
 
           <div>
             <p className="text-sm text-muted-foreground">User Mode</p>

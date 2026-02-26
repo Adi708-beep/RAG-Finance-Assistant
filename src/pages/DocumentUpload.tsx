@@ -7,8 +7,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getDocuments, createDocument } from '@/db/api';
 import { supabase } from '@/db/supabase';
 import type { Document } from '@/types';
-import { Upload, FileText, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Upload, FileText, CheckCircle, AlertCircle, Loader2, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { backendJson, getApiBaseUrl } from '@/lib/backend-api';
 
 export default function DocumentUpload() {
   const { user } = useAuth();
@@ -17,6 +18,50 @@ export default function DocumentUpload() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [processing, setProcessing] = useState<string | null>(null);
+
+  const bucketName = 'app-9hnntffjcnb5_documents_images';
+
+  const getStoragePathFromPublicUrl = (publicUrl: string): string | null => {
+    const marker = `/storage/v1/object/public/${bucketName}/`;
+    const idx = publicUrl.indexOf(marker);
+    if (idx === -1) return null;
+    const path = publicUrl.slice(idx + marker.length);
+    try {
+      return decodeURIComponent(path);
+    } catch {
+      return path;
+    }
+  };
+
+  const handleRemoveDocument = async (doc: Document) => {
+    if (!user) return;
+    if (processing === doc.id || uploading) return;
+
+    try {
+      const storagePath = getStoragePathFromPublicUrl(doc.file_url);
+      if (storagePath) {
+        const { error: removeError } = await supabase.storage.from(bucketName).remove([storagePath]);
+        if (removeError) throw removeError;
+      }
+
+      const { error: deleteError } = await supabase.from('documents').delete().eq('id', doc.id);
+      if (deleteError) throw deleteError;
+
+      setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
+
+      toast({
+        title: 'Document removed',
+        description: 'The uploaded document has been deleted.'
+      });
+    } catch (error) {
+      console.error('Error removing document:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to remove document',
+        variant: 'destructive'
+      });
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -106,7 +151,7 @@ export default function DocumentUpload() {
 
       // Upload to Supabase Storage
       const { error: uploadError } = await supabase.storage
-        .from('app-9hnntffjcnb5_documents_images')
+        .from(bucketName)
         .upload(filePath, file);
 
       if (uploadError) {
@@ -115,7 +160,7 @@ export default function DocumentUpload() {
 
       // Get public URL
       const { data: urlData } = supabase.storage
-        .from('app-9hnntffjcnb5_documents_images')
+        .from(bucketName)
         .getPublicUrl(filePath);
 
       const publicUrl = urlData.publicUrl;
@@ -140,15 +185,28 @@ export default function DocumentUpload() {
       // Process document with OCR
       setProcessing(doc.id);
 
-      const { data, error } = await supabase.functions.invoke('ocr-process', {
-        body: {
-          documentId: doc.id,
-          fileUrl: publicUrl,
-          userId: user.id
-        }
-      });
-
-      if (error) throw error;
+      const apiBase = getApiBaseUrl();
+      let data: any;
+      if (apiBase) {
+        data = await backendJson('/api/ocr/process', {
+          method: 'POST',
+          body: {
+            documentId: doc.id,
+            fileUrl: publicUrl,
+            userId: user.id
+          }
+        });
+      } else {
+        const result = await supabase.functions.invoke('ocr-process', {
+          body: {
+            documentId: doc.id,
+            fileUrl: publicUrl,
+            userId: user.id
+          }
+        });
+        if (result.error) throw result.error;
+        data = result.data;
+      }
 
       // Update document status
       setDocuments((prev) =>
@@ -258,7 +316,7 @@ export default function DocumentUpload() {
                       </p>
                     </div>
                   </div>
-                  <div>
+                  <div className="flex items-center gap-3">
                     {processing === doc.id ? (
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -275,6 +333,16 @@ export default function DocumentUpload() {
                         Pending
                       </div>
                     )}
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveDocument(doc)}
+                      disabled={uploading || processing === doc.id}
+                      aria-label="Remove document"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               ))}

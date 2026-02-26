@@ -24,6 +24,7 @@ import { Send, Bot, User, AlertCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { getApiBaseUrl, getSupabaseAccessToken } from '@/lib/backend-api';
 
 export default function Chat() {
   const { user } = useAuth();
@@ -78,32 +79,37 @@ export default function Chat() {
     setMessages((prev) => [...prev, tempUserMessage]);
 
     try {
-      const { data, error } = await supabase.functions.invoke('gemini-chat', {
-        body: {
-          message: userMessage,
-          userId: user.id
-        }
-      });
+      const apiBase = getApiBaseUrl();
 
-      if (error) {
-        throw error;
-      }
-
-      // Handle streaming response
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini-chat`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-          },
-          body: JSON.stringify({
-            message: userMessage,
-            userId: user.id
-          })
-        }
-      );
+      const response = apiBase
+        ? await (async () => {
+            const token = await getSupabaseAccessToken();
+            if (!token) {
+              throw new Error('Not authenticated');
+            }
+            return fetch(`${apiBase}/api/chat/stream`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                message: userMessage,
+                userId: user.id
+              })
+            });
+          })()
+        : await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini-chat`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({
+              message: userMessage,
+              userId: user.id
+            })
+          });
 
       if (!response.ok) {
         throw new Error('Failed to get response');

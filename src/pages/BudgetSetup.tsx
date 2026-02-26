@@ -15,6 +15,7 @@ import type { Budget, BudgetPeriod, BudgetSuggestion } from '@/types';
 import { CATEGORY_LABELS } from '@/types';
 import { Sparkles, Calculator, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { backendJson, getApiBaseUrl } from '@/lib/backend-api';
 
 export default function BudgetSetup() {
   const { user } = useAuth();
@@ -27,6 +28,7 @@ export default function BudgetSetup() {
   const [aiSuggestion, setAiSuggestion] = useState<BudgetSuggestion | null>(null);
   const [showApprovalDialog, setShowApprovalDialog] = useState(false);
   const [loadingSuggestion, setLoadingSuggestion] = useState(false);
+  const [savingAiBudget, setSavingAiBudget] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -43,6 +45,19 @@ export default function BudgetSetup() {
 
         if (budgetData) {
           setPeriod(budgetData.period);
+
+          const nextAllocations: Record<string, string> = {};
+          Object.keys(CATEGORY_LABELS).forEach((category) => {
+            const value = (budgetData as any)[category];
+            nextAllocations[category] = (value ?? 0).toString();
+          });
+          setAllocations(nextAllocations);
+        } else {
+          const nextAllocations: Record<string, string> = {};
+          Object.keys(CATEGORY_LABELS).forEach((category) => {
+            nextAllocations[category] = '0';
+          });
+          setAllocations(nextAllocations);
         }
       } catch (error) {
         console.error('Error loading budget data:', error);
@@ -67,17 +82,33 @@ export default function BudgetSetup() {
     setLoadingSuggestion(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('budget-suggest', {
-        body: {
-          userId: user.id,
-          totalIncome,
-          period
-        }
-      });
+      const apiBase = getApiBaseUrl();
+      if (apiBase) {
+        const data = await backendJson<{ suggestion: BudgetSuggestion }>(
+          '/api/budget/suggest',
+          {
+            method: 'POST',
+            body: {
+              userId: user.id,
+              totalIncome,
+              period
+            }
+          }
+        );
+        setAiSuggestion(data.suggestion);
+      } else {
+        const { data, error } = await supabase.functions.invoke('budget-suggest', {
+          body: {
+            userId: user.id,
+            totalIncome,
+            period
+          }
+        });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setAiSuggestion(data.suggestion);
+        setAiSuggestion(data.suggestion);
+      }
       setShowApprovalDialog(true);
     } catch (error) {
       toast({
@@ -90,21 +121,74 @@ export default function BudgetSetup() {
     }
   };
 
-  const handleApproveSuggestion = () => {
+  const handleApproveSuggestion = async () => {
     if (!aiSuggestion) return;
+    if (!user) return;
 
     const newAllocations: Record<string, string> = {};
     Object.keys(CATEGORY_LABELS).forEach((category) => {
       newAllocations[category] = aiSuggestion[category as keyof BudgetSuggestion]?.toString() || '0';
     });
 
-    setAllocations(newAllocations);
-    setShowApprovalDialog(false);
+    const total = Object.values(newAllocations).reduce(
+      (sum, val) => sum + (parseFloat(val) || 0),
+      0
+    );
 
-    toast({
-      title: 'Suggestion applied',
-      description: 'AI budget suggestion has been applied'
-    });
+    if (total > totalIncome) {
+      setAllocations(newAllocations);
+      setShowApprovalDialog(false);
+      toast({
+        title: 'Budget exceeds income',
+        description: 'AI suggestion exceeds your income. Please adjust and save.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setAllocations(newAllocations);
+
+    try {
+      setSavingAiBudget(true);
+      const newBudget = await createBudget({
+        user_id: user.id,
+        period,
+        total_income: totalIncome,
+        rent: Number(aiSuggestion.rent || 0),
+        groceries: Number(aiSuggestion.groceries || 0),
+        transport: Number(aiSuggestion.transport || 0),
+        entertainment: Number(aiSuggestion.entertainment || 0),
+        savings: Number(aiSuggestion.savings || 0),
+        emergency_fund: Number(aiSuggestion.emergency_fund || 0),
+        utilities: Number(aiSuggestion.utilities || 0),
+        healthcare: Number(aiSuggestion.healthcare || 0),
+        education: Number(aiSuggestion.education || 0),
+        dining: Number(aiSuggestion.dining || 0),
+        shopping: Number(aiSuggestion.shopping || 0),
+        other: Number(aiSuggestion.other || 0),
+        is_active: true
+      });
+
+      setBudget(newBudget);
+      setShowApprovalDialog(false);
+
+      toast({
+        title: 'Budget saved',
+        description: 'AI budget has been saved successfully'
+      });
+    } catch (error) {
+      const message =
+        error && typeof error === 'object' && 'message' in error
+          ? String((error as any).message)
+          : 'Failed to save AI budget';
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive'
+      });
+    } finally {
+      setSavingAiBudget(false);
+    }
   };
 
   const handleSaveBudget = async () => {
@@ -148,9 +232,13 @@ export default function BudgetSetup() {
         description: 'Your budget has been created successfully'
       });
     } catch (error) {
+      const message =
+        error && typeof error === 'object' && 'message' in error
+          ? String((error as any).message)
+          : 'Failed to save budget';
       toast({
         title: 'Error',
-        description: 'Failed to save budget',
+        description: message,
         variant: 'destructive'
       });
     }
@@ -308,8 +396,8 @@ export default function BudgetSetup() {
             <Button variant="outline" onClick={() => setShowApprovalDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={handleApproveSuggestion}>
-              Approve & Apply
+            <Button onClick={handleApproveSuggestion} disabled={savingAiBudget}>
+              {savingAiBudget ? 'Saving...' : 'Approve & Save'}
             </Button>
           </DialogFooter>
         </DialogContent>
