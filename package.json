@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "miaoda-react-admin",
   "version": "0.0.1",
   "type": "module",
@@ -92,3 +93,9 @@
     "vite-plugin-svgr": "^4.5.0"
   }
 }
+=======
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  }
+}
+>>>>>>> target/main

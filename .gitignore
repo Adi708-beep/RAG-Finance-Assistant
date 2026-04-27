@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -28,3 +29,7 @@ package-lock.json
 history/*.json
 .vite_cache
 .env
+=======
+.vercel
+.env*.local
+>>>>>>> target/main
