@@ -75,8 +75,8 @@ Deno.serve(async (req) => {
       .eq('id', documentId);
 
     // Use Gemini to parse structured transaction data
-    const geminiApiKey = Deno.env.get('INTEGRATIONS_API_KEY');
-    const geminiUrl = 'https://app-9hnntffjcnb5-api-VaOwP8E7dJqa.gateway.appmedo.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse';
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    const geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent';
 
     const parsePrompt = `You are an expert financial document parser. Extract ALL transaction data from this receipt/bank statement text with high accuracy.
 
@@ -124,11 +124,10 @@ ${extractedText}`;
       ]
     };
 
-    const geminiResponse = await fetch(geminiUrl, {
+    const geminiResponse = await fetch(`${geminiUrl}?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Gateway-Authorization': `Bearer ${geminiApiKey}`
       },
       body: JSON.stringify(geminiRequest)
     });

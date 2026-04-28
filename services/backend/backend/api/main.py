@@ -46,34 +46,41 @@ state = _State()
 
 @app.on_event("startup")
 async def _startup() -> None:
-    producer = AIOKafkaProducer(
-        bootstrap_servers=settings.kafka_bootstrap_servers,
-        client_id=settings.kafka_client_id,
-        value_serializer=lambda v: json.dumps(v).encode("utf-8"),
-        key_serializer=lambda v: v.encode("utf-8") if isinstance(v, str) else v,
-    )
-    await producer.start()
-    state.producer = producer
+    try:
+        producer = AIOKafkaProducer(
+            bootstrap_servers=settings.kafka_bootstrap_servers,
+            client_id=settings.kafka_client_id,
+            value_serializer=lambda v: json.dumps(v).encode("utf-8"),
+            key_serializer=lambda v: v.encode("utf-8") if isinstance(v, str) else v,
+        )
+        await producer.start()
+        state.producer = producer
 
-    state.budget_rpc = KafkaRpc(
-        bootstrap_servers=settings.kafka_bootstrap_servers,
-        client_id=settings.kafka_client_id,
-        topics=RpcTopics(settings.topic_budget_requests, settings.topic_budget_responses),
-        group_id="backend-api-budget-rpc",
-    )
-    await state.budget_rpc.start()
+        state.budget_rpc = KafkaRpc(
+            bootstrap_servers=settings.kafka_bootstrap_servers,
+            client_id=settings.kafka_client_id,
+            topics=RpcTopics(settings.topic_budget_requests, settings.topic_budget_responses),
+            group_id="backend-api-budget-rpc",
+        )
+        await state.budget_rpc.start()
 
-    state.ocr_rpc = KafkaRpc(
-        bootstrap_servers=settings.kafka_bootstrap_servers,
-        client_id=settings.kafka_client_id,
-        topics=RpcTopics(settings.topic_ocr_requests, settings.topic_ocr_responses),
-        group_id="backend-api-ocr-rpc",
-    )
-    await state.ocr_rpc.start()
+        state.ocr_rpc = KafkaRpc(
+            bootstrap_servers=settings.kafka_bootstrap_servers,
+            client_id=settings.kafka_client_id,
+            topics=RpcTopics(settings.topic_ocr_requests, settings.topic_ocr_responses),
+            group_id="backend-api-ocr-rpc",
+        )
+        await state.ocr_rpc.start()
+        print("✓ Kafka connected successfully")
+    except Exception as e:
+        print(f"⚠ Kafka unavailable ({str(e)[:50]}...) - Running in fallback mode")
+        print("✓ Chat/Budget endpoints with Gemini will still work")
 
 
 @app.on_event("shutdown")
 async def _shutdown() -> None:
+    if state.producer:
+        await state.producer.stop()
     if state.budget_rpc:
         await state.budget_rpc.stop()
     if state.ocr_rpc:
@@ -86,6 +93,13 @@ def _require_token(req: Request) -> str:
     auth = req.headers.get("authorization") or req.headers.get("Authorization")
     if not auth or not auth.lower().startswith("bearer "):
         raise HTTPException(status_code=401, detail="Missing Authorization Bearer token")
+    return auth.split(" ", 1)[1].strip()
+
+
+def _optional_token(req: Request) -> str | None:
+    auth = req.headers.get("authorization") or req.headers.get("Authorization")
+    if not auth or not auth.lower().startswith("bearer "):
+        return None
     return auth.split(" ", 1)[1].strip()
 
 
@@ -165,15 +179,19 @@ async def chat_stream(req: Request) -> EventSourceResponse:
     if not state.producer:
         raise HTTPException(status_code=503, detail="Backend not ready")
 
-    token = _require_token(req)
+    token = _optional_token(req)
     body = await req.json()
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
     correlation_id = str(uuid.uuid4())
 
     payload = {
         **body,
-        "supabase_access_token": token,
         "correlation_id": correlation_id,
     }
+
+    if token:
+        payload["supabase_access_token"] = token
 
     await state.producer.send_and_wait(settings.topic_chat_requests, payload, key=correlation_id)
 

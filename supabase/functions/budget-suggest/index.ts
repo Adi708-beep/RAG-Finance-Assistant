@@ -11,7 +11,7 @@ interface BudgetSuggestionRequest {
   period: 'monthly' | 'yearly';
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
 
     // Calculate average spending by category
     const spendingByCategory: Record<string, number[]> = {};
-    transactions?.forEach((t) => {
+    transactions?.forEach((t: any) => {
       if (!spendingByCategory[t.category]) {
         spendingByCategory[t.category] = [];
       }
@@ -98,8 +98,15 @@ Ensure:
 5. All values must be positive numbers in Indian Rupees (₹)`;
 
     // Call Gemini API
-    const geminiApiKey = Deno.env.get('INTEGRATIONS_API_KEY');
-    const geminiUrl = 'https://app-9hnntffjcnb5-api-VaOwP8E7dJqa.gateway.appmedo.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse';
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    const geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent';
+
+    if (!geminiApiKey) {
+      return new Response(
+        JSON.stringify({ error: 'GEMINI_API_KEY is not set in function environment' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     const geminiRequest = {
       contents: [
@@ -107,17 +114,31 @@ Ensure:
       ]
     };
 
-    const geminiResponse = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Gateway-Authorization': `Bearer ${geminiApiKey}`
-      },
-      body: JSON.stringify(geminiRequest)
-    });
+    let geminiResponse: Response;
+    try {
+      geminiResponse = await fetch(`${geminiUrl}?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(geminiRequest)
+      });
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      console.error('Failed to call Gemini API:', e);
+      return new Response(
+        JSON.stringify({ error: `Failed to call Gemini API: ${message}` }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     if (!geminiResponse.ok) {
-      throw new Error(`Gemini API error: ${geminiResponse.statusText}`);
+      const bodyText = await geminiResponse.text().catch(() => '');
+      console.error('Gemini API returned non-ok:', geminiResponse.status, bodyText);
+      return new Response(
+        JSON.stringify({ error: `Gemini API error: ${geminiResponse.status} ${bodyText}` }),
+        { status: geminiResponse.status || 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Read streaming response
@@ -125,29 +146,39 @@ Ensure:
     const decoder = new TextDecoder();
     let fullResponse = '';
 
-    while (true) {
-      const { done, value } = await reader!.read();
-      if (done) break;
+    try {
+      while (true) {
+        const { done, value } = await reader!.read();
+        if (done) break;
 
-      const chunk = decoder.decode(value);
-      const lines = chunk.split('\n');
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
 
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6);
-          if (data.trim()) {
-            try {
-              const parsed = JSON.parse(data);
-              const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
-              if (text) {
-                fullResponse += text;
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6);
+            if (data.trim()) {
+              try {
+                const parsed = JSON.parse(data);
+                const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                  fullResponse += text;
+                }
+              } catch (e) {
+                // Skip invalid JSON chunks but keep the stream
+                console.debug('Skipping invalid SSE JSON chunk', e);
               }
-            } catch (e) {
-              // Skip invalid JSON
             }
           }
         }
       }
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      console.error('Error while reading Gemini stream:', e);
+      return new Response(
+        JSON.stringify({ error: `Error reading Gemini stream: ${message}` }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Extract JSON from response
@@ -158,8 +189,11 @@ Ensure:
         budgetSuggestion = JSON.parse(jsonMatch[0]);
       }
     } catch (e) {
-      console.error('Failed to parse budget suggestion:', e);
-      throw new Error('Failed to generate budget suggestion');
+      console.error('Failed to parse budget suggestion:', e, 'fullResponse:', fullResponse);
+      return new Response(
+        JSON.stringify({ error: 'Failed to parse budget suggestion from Gemini response', details: fullResponse }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     return new Response(
@@ -173,9 +207,10 @@ Ensure:
     );
 
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     console.error('Error in budget-suggest:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

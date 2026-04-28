@@ -82,27 +82,36 @@ export default function BudgetSetup() {
     setLoadingSuggestion(true);
 
     try {
+      const payload = {
+        userId: user.id,
+        totalIncome,
+        period
+      };
+
       const apiBase = getApiBaseUrl();
       if (apiBase) {
-        const data = await backendJson<{ suggestion: BudgetSuggestion }>(
-          '/api/budget/suggest',
-          {
-            method: 'POST',
-            body: {
-              userId: user.id,
-              totalIncome,
-              period
+        try {
+          const data = await backendJson<{ suggestion: BudgetSuggestion }>(
+            '/api/budget/suggest',
+            {
+              method: 'POST',
+              body: payload
             }
-          }
-        );
-        setAiSuggestion(data.suggestion);
+          );
+          setAiSuggestion(data.suggestion);
+        } catch (backendError) {
+          console.warn('Backend budget API failed, falling back to Supabase function:', backendError);
+          const { data, error } = await supabase.functions.invoke('budget-suggest', {
+            body: payload
+          });
+
+          if (error) throw error;
+
+          setAiSuggestion(data.suggestion);
+        }
       } else {
         const { data, error } = await supabase.functions.invoke('budget-suggest', {
-          body: {
-            userId: user.id,
-            totalIncome,
-            period
-          }
+          body: payload
         });
 
         if (error) throw error;
@@ -111,10 +120,28 @@ export default function BudgetSetup() {
       }
       setShowApprovalDialog(true);
     } catch (error) {
+      console.error('Failed to get AI suggestion:', error);
+
+      const fallbackSuggestion: BudgetSuggestion = {
+        rent: Number((totalIncome * 0.3).toFixed(2)),
+        groceries: Number((totalIncome * 0.15).toFixed(2)),
+        transport: Number((totalIncome * 0.1).toFixed(2)),
+        entertainment: Number((totalIncome * 0.05).toFixed(2)),
+        savings: Number((totalIncome * 0.2).toFixed(2)),
+        emergency_fund: Number((totalIncome * 0.1).toFixed(2)),
+        utilities: Number((totalIncome * 0.05).toFixed(2)),
+        healthcare: Number((totalIncome * 0.03).toFixed(2)),
+        education: Number((totalIncome * 0.02).toFixed(2)),
+        dining: 0,
+        shopping: 0,
+        other: Number(Math.max(0, totalIncome - (totalIncome * 0.3 + totalIncome * 0.15 + totalIncome * 0.1 + totalIncome * 0.05 + totalIncome * 0.2 + totalIncome * 0.1 + totalIncome * 0.05 + totalIncome * 0.03 + totalIncome * 0.02)).toFixed(2))
+      };
+
+      setAiSuggestion(fallbackSuggestion);
+      setShowApprovalDialog(true);
       toast({
-        title: 'Error',
-        description: 'Failed to get AI suggestion',
-        variant: 'destructive'
+        title: 'Using local budget guidance',
+        description: 'Remote AI is unavailable right now, so a fallback budget plan was generated from your income.'
       });
     } finally {
       setLoadingSuggestion(false);

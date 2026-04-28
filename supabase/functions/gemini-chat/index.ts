@@ -8,6 +8,11 @@ const corsHeaders = {
 interface ChatRequest {
   message: string;
   userId: string;
+  localContext?: Record<string, unknown>;
+  localHistory?: Array<{
+    role: 'user' | 'model';
+    message: string;
+  }>;
 }
 
 // Enhanced RAG: Relevance scoring for context retrieval
@@ -128,7 +133,7 @@ Deno.serve(async (req) => {
       supabase.from('budgets').select('*').eq('user_id', userId).eq('is_active', true).order('created_at', { ascending: false }).limit(1),
       supabase.from('transactions').select('*').eq('user_id', userId).order('transaction_date', { ascending: false }).limit(transactionLimit),
       supabase.from('chat_history').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20),
-      supabase.from('uploaded_documents').select('*').eq('user_id', userId).order('uploaded_at', { ascending: false }).limit(10)
+      supabase.from('documents').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(10)
     ]);
 
     // Enhanced RAG: Filter transactions by relevance
@@ -309,8 +314,8 @@ QUERY ANALYSIS:
 Answer the user's question based on this comprehensive financial data. Always use ₹ (Indian Rupees) for currency amounts. Provide specific numbers and actionable insights.`;
 
     // Prepare Gemini API request
-    const geminiApiKey = Deno.env.get('INTEGRATIONS_API_KEY');
-    const geminiUrl = 'https://app-9hnntffjcnb5-api-VaOwP8E7dJqa.gateway.appmedo.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse';
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    const geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent';
 
     const geminiRequest = {
       contents: [
@@ -322,11 +327,10 @@ Answer the user's question based on this comprehensive financial data. Always us
     };
 
     // Call Gemini API with streaming
-    const geminiResponse = await fetch(geminiUrl, {
+    const geminiResponse = await fetch(`${geminiUrl}?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Gateway-Authorization': `Bearer ${geminiApiKey}`
       },
       body: JSON.stringify(geminiRequest)
     });

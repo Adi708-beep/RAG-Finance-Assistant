@@ -20,15 +20,8 @@ class Settings:
     supabase_anon_key: str = _env("SUPABASE_ANON_KEY")
     supabase_service_role_key: str | None = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
-    integrations_api_key: str = _env("INTEGRATIONS_API_KEY")
-    gemini_url: str = _env(
-        "GEMINI_URL",
-        "https://app-9hnntffjcnb5-api-VaOwP8E7dJqa.gateway.appmedo.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse",
-    )
-    ocr_url: str = _env(
-        "OCR_URL",
-        "https://app-9hnntffjcnb5-api-W9z3M6eONl3L.gateway.appmedo.com/parse/image",
-    )
+    gemini_api_key: str = _env("GEMINI_API_KEY")
+    gemini_url: str = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent"
 
     topic_chat_requests: str = os.getenv("TOPIC_CHAT_REQUESTS", "chat_requests")
     topic_chat_responses: str = os.getenv("TOPIC_CHAT_RESPONSES", "chat_responses")

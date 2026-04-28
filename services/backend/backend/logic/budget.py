@@ -63,10 +63,9 @@ async def handle_budget_suggest(inputs: dict[str, Any], settings: Settings) -> d
 
     async with httpx.AsyncClient(timeout=120) as client:
         resp = await client.post(
-            settings.gemini_url,
+            f"{settings.gemini_url}?key={settings.gemini_api_key}",
             headers={
                 "Content-Type": "application/json",
-                "X-Gateway-Authorization": f"Bearer {settings.integrations_api_key}",
             },
             json=gemini_request,
         )

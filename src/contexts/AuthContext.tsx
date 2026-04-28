@@ -11,6 +11,7 @@ type LocalAuthAccount = {
   username: string;
   email: string;
   password: string;
+  userMode?: Profile['user_mode'];
   createdAt: string;
 };
 
@@ -46,7 +47,7 @@ function toLocalProfile(account: LocalAuthAccount): Profile {
     email: account.email,
     username: account.username,
     role: 'user',
-    user_mode: 'personal',
+    user_mode: account.userMode ?? 'personal',
     created_at: account.createdAt,
     updated_at: now
   };
@@ -216,6 +217,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           username,
           email: `${username}@miaoda.com`,
           password,
+          userMode: 'personal',
           createdAt: new Date().toISOString()
         };
 

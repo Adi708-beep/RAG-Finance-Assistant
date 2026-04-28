@@ -303,8 +303,8 @@ def _validate_chat_input(args: dict[str, Any]) -> str | None:
         return "userId is required"
     if not args.get("correlation_id"):
         return "correlation_id is required"
-    if not args.get("supabase_access_token"):
-        return "Authorization token is required"
+    if not args.get("supabase_access_token") and not args.get("localContext"):
+        return "Authorization token or localContext is required"
     return None
 
 
@@ -421,8 +421,6 @@ async def _run() -> None:
         settings.topic_transactions: Pathway(
             nodes={
                 "update": ToolNode(id="update", tool="logic.transaction_update"),
-                "notify": ToolNode(id="notify", tool="logic.notification_send"),
-                "analyze": ToolNode(id="analyze", tool="logic.analytics_update"),
             }
         ),
         settings.topic_notifications: Pathway(

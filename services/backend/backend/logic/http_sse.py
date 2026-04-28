@@ -32,8 +32,8 @@ async def read_appmedo_sse_text(response: httpx.Response) -> str:
     return full_text
 
 
-async def iter_appmedo_sse_chunks(response: httpx.Response):
-    """Yields candidate text chunks from an Appmedo/Gemini style SSE response."""
+async def iter_google_sse_chunks(response: httpx.Response):
+    """Yields candidate text chunks from a Gemini SSE response."""
     async for line in response.aiter_lines():
         if not line:
             continue
@@ -54,3 +54,7 @@ async def iter_appmedo_sse_chunks(response: httpx.Response):
         )
         if text:
             yield str(text)
+
+
+# Backward compatibility alias
+iter_appmedo_sse_chunks = iter_google_sse_chunks
